@@ -1,13 +1,16 @@
 # One Hour Launch Skills
 
-The full launch system as Claude Code skills, in **Spanish (`es/`)** and **English (`en/`)**:
+The full launch system as Claude Code skills.
 
-| Step | Spanish (`es/skills/`) | English (`en/skills/`) | Status |
+- **`en/` — plugin `one-hour-launch`: the product.** English is the master version: new skills and rule changes are written here first.
+- **`es/` — plugin `one-hour-launch-es`:** Spanish mirror, kept in sync for internal use and a future Spanish edition.
+
+| Step | English (`en/skills/`) | Spanish (`es/skills/`) | Status |
 |---|---|---|---|
-| 1. Find winning offers | `cazador-de-ofertas` | `offer-hunter` | ✅ v1 |
-| 2. Model the product | `modelar-producto` | `product-modeler` | 🚧 to build |
-| 3. Model the funnel | `modelar-funnel` | `funnel-modeler` | 🚧 to build |
-| 4. Create the ads | `rutina-de-ads` | `ads-routine` | ✅ v2 |
+| 1. Find winning offers | `offer-hunter` | `cazador-de-ofertas` | ✅ v1 |
+| 2. Model the product | `product-modeler` | `modelar-producto` | 🚧 to build |
+| 3. Model the funnel | `funnel-modeler` | `modelar-funnel` | 🚧 to build |
+| 4. Create the ads | `ads-routine` | `rutina-de-ads` | ✅ v2 |
 
 Each step's output feeds the next one: winning offer → product spec → funnel → ads.
 
@@ -15,14 +18,14 @@ Each step's output feeds the next one: winning offer → product spec → funnel
 
 ```
 .claude-plugin/marketplace.json   ← marketplace: lists both plugins
-es/                               ← plugin "launch-engine-es"
-  .claude-plugin/plugin.json
-  skills/<skill>/SKILL.md
-  guias/                          ← setup & usage guides (PDF)
-en/                               ← plugin "launch-engine-en"
+en/                               ← plugin "one-hour-launch" (master)
   .claude-plugin/plugin.json
   skills/<skill>/SKILL.md
   guides/                         ← setup & usage guides (Markdown)
+es/                               ← plugin "one-hour-launch-es" (mirror)
+  .claude-plugin/plugin.json
+  skills/<skill>/SKILL.md
+  guias/                          ← setup & usage guides (PDF)
 ```
 
 Every skill exists in both languages with the same rules. Skill names differ per language so both plugins can be installed side by side without collisions.
@@ -33,7 +36,7 @@ In Claude Code (local, cloud session, or a Grok Bot cloud computer with Claude C
 
 ```
 /plugin marketplace add sparda2/one-hour-launch-skills
-/plugin install launch-engine-en@one-hour-launch-skills    # or launch-engine-es
+/plugin install one-hour-launch@one-hour-launch-skills
 ```
 
 Update later with `/plugin marketplace update one-hour-launch-skills`.
@@ -45,10 +48,10 @@ To auto-enable in a workspace repo (so every cloud session opening it has the sk
   "extraKnownMarketplaces": {
     "one-hour-launch-skills": { "source": { "source": "github", "repo": "sparda2/one-hour-launch-skills" } }
   },
-  "enabledPlugins": { "launch-engine-es@one-hour-launch-skills": true }
+  "enabledPlugins": { "one-hour-launch-es@one-hour-launch-skills": true }
 }
 ```
 
 ## Rule for editing
 
-The skills are the single source of truth: scheduled runs only point at them. Change a rule in **both** languages in the same commit.
+The skills are the single source of truth: scheduled runs only point at them. Change a rule in `en/` first, then mirror it to `es/` in the same commit.
