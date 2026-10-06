@@ -6,6 +6,36 @@ This guide takes you from zero to your first offer hunt. Read it once, top to bo
 
 ---
 
+## ⚡ The fast way (recommended): let the skill set itself up
+
+You don't need to read the rest of this guide. The Offer Hunter has a **guided setup** built in: it checks what's missing, tells you exactly what to click, and takes you all the way to your first hunt.
+
+1. **Create your workspace.** On GitHub, go to **github.com/new**, name it `my-launch-workspace`, choose **Private**, and click **Create repository**.
+2. **Open Claude Code in the cloud.** Go to **claude.ai/code**, or in the Claude desktop app open **Code** and choose **Cloud**. Start a new session on `my-launch-workspace`. If GitHub asks for permission, allow access to that repository.
+3. **Upload the skill.** Download `en/skills/offer-hunter/SKILL.md` from this pack and attach it to your first message.
+4. **Type:**
+   ```
+   Set this up for me step by step, then run my first offer hunt.
+   ```
+
+Claude then guides you, one step at a time:
+
+| ✅ | Step | What happens |
+|---|---|---|
+| 1 | Workspace | It checks it can save to your GitHub repository, so nothing is lost when the session ends |
+| 2 | Install | It saves the skill into your workspace, so `/offer-hunter` works in every future session |
+| 3 | Connections | It checks for the **Meta Ads** and **Google Drive** connectors and internet access, and gives you one short click-by-click list for anything missing |
+| 4 | One restart | Connectors only load in a new session. It saves your progress and gives you a message to paste into the new session to continue |
+| 5 | Your settings | It asks for your product filter, niches and pages, in at most 2 rounds |
+| 6 | Quick test | One test search on Meta, and it creates your master Google Sheet and gives you the link |
+| 7 | First hunt | 20–40 minutes, ending with your top 3 offers of the day |
+
+> **After setup**, every time you want to hunt, open a session on `my-launch-workspace` and type `/offer-hunter`.
+
+The sections below are the reference: what each piece is, other ways to install (your own computer, Grok Bot), automation, and troubleshooting.
+
+---
+
 ## 1. What's in the pack
 
 | Step | Skill | What it does | Status |

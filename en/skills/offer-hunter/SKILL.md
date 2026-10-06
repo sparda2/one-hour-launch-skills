@@ -1,7 +1,95 @@
 ---
 name: offer-hunter
-description: Daily hunt for scaling offers in Meta's Ad Library according to your format filter, and updates your master Google Sheet (or Excel) with the history. Asks for its settings at the start (or reuses the last ones). Use when the user says 'hunt offers', 'the hunter', 'find scaling offers' or asks for the master sheet sweep.
+description: Daily hunt for scaling offers in Meta's Ad Library according to your format filter, and updates your master Google Sheet (or Excel) with the history. Asks for its settings at the start (or reuses the last ones). Includes a guided first-time setup that takes anyone from 'I just uploaded this file' to their first hunt. Use when the user says 'hunt offers', 'the hunter', 'find scaling offers', 'set up the offer hunter', uploads this skill and asks to set it up, or asks for the master sheet sweep.
 ---
+
+# GUIDED SETUP — from "I just uploaded this file" to the first hunt
+
+Run this section FIRST whenever the profile (`launch-profile.md`, section
+`## Offer hunter`) does not say `Setup: complete`, or when the person asks to
+set up / repair the hunter. Once setup is complete, skip straight to STEP 0.
+
+**How to guide (non-negotiable):**
+- Talk in the person's language. Assume they are NOT technical: one action at
+  a time, exact click paths, what they will see, and how to tell it worked.
+- CHECK before asking: detect everything you can yourself (tools, network,
+  files, git). Only ask the person for what you can't detect or do.
+- Batch every fix that needs a NEW session into ONE restart (connectors and
+  network changes only load when a session starts). Never make them restart
+  twice if one restart could do it.
+- Keep a checklist in the profile (`## Offer hunter` → `Setup:` with each
+  step ✅/❌) and commit + push it, so progress survives a restart.
+- Show progress each turn as a short checklist: ✅ done, 👉 now, ⬜ next.
+- Never ask for passwords, tokens or API keys in the chat.
+
+**S1 — Where are we running?**
+Check `echo $CLAUDE_CODE_REMOTE` (`true` = cloud session at claude.ai/code or
+the desktop/mobile app; otherwise a local computer).
+- Cloud: files are DELETED when the session ends. The work must live in a
+  GitHub repository the session can push to. Check with `git remote -v` and a
+  dry-run push. If there is no writable repo: guide them to create a private
+  repo (github.com/new → name `my-launch-workspace` → Private → Create), make
+  sure the Claude GitHub App can access it (github.com/apps/claude →
+  Configure → add the repo), then start a NEW session on that repo and upload
+  this skill file again. Give them the exact first message to paste (S8).
+- Local: any folder works; recommend a git repo or a synced folder for backups.
+
+**S2 — Install the skill in the workspace (so it's there next time).**
+If this skill is not already available as an installed skill or plugin, copy
+THIS file to `.claude/skills/offer-hunter/SKILL.md` in the workspace (keep it
+byte-for-byte; never edit its rules), then commit and push. From now on, any
+session on this workspace has `/offer-hunter`.
+
+**S3 — Detect what's missing (all at once).** Search the available tools
+(including deferred tools / tool search) and test:
+- **Meta Ad Library tool** (e.g. `ads_library_search`; the name varies by
+  connector). Missing → ❌ Meta.
+- **Google Drive / Sheets tools** that can create and write a Google Sheet
+  (only if OUTPUT = google-sheet, the default). Missing → ❌ Drive.
+- **Network (cloud only):** fetch `https://www.facebook.com/ads/library/` and
+  one random non-allowlisted site (e.g. `https://gumroad.com`). Blocked →
+  ❌ Network. (Competitor landings can be on any domain.)
+
+**S4 — Fix everything in ONE round, then ONE restart.** Give one numbered
+list with only the ❌ items:
+- ❌ Meta → claude.ai → Settings → Connectors (claude.ai/customize/connectors)
+  → find the Meta Ads connector in the directory, or "Add custom connector"
+  with the URL of their Meta MCP server → Connect → log in to Meta → approve.
+- ❌ Drive → same page → Google Drive → Connect → choose their Google account
+  → allow access.
+- ❌ Network (cloud) → in the session title bar, open the environment menu →
+  Edit → Network access → **Full** → Save.
+Then: commit + push the profile checklist, and tell them to start a NEW
+session on the same workspace repo and paste the resume message (S8). If
+nothing is ❌, skip the restart.
+
+**S5 — Verify after the restart.** Re-run S3. Anything still ❌ → explain the
+most likely cause in one line (e.g. "the connector was added after this
+session started") and the one fix. Don't continue until Meta works (no Meta =
+no hunt). If only Drive fails, offer OUTPUT = excel as a fallback.
+
+**S6 — Settings.** Run STEP 0 → "How to get the settings" (first-time
+questions, at most 2 rounds). Help sharpen YOUR_FILTER and NICHE_CIRCLES if
+vague, never invent them. For OWN_PAGES, show how to find a page_id (Ad Library
+→ search their page → click it → the URL shows `view_all_page_id=NUMBER`) or
+look the names up with the Meta tool and confirm with them.
+
+**S7 — Smoke test (2 minutes, before the real hunt).**
+- Meta: one canary query (e.g. 'shoes', US, active). Results > 0 → ✅.
+- Sheet: create the master sheet (or open the one they gave), write the
+  header rows of the 4 tabs, read them back → ✅, and give them the link.
+- Keyword bank: generate it (STEP 0 → point 5) and say where it is.
+Mark `Setup: complete` in the profile, commit + push, then tell them: "Setup
+done. Starting your first hunt now (20-40 min)." and go to THE ROUTINE.
+
+**S8 — Resume message (give it whenever a restart is needed):**
+`Continue setting up the offer hunter — read .claude/skills/offer-hunter/SKILL.md and resume the GUIDED SETUP from the checklist in launch-profile.md.`
+
+**After the first hunt:** ask them to check 2-3 findings by hand (library
+link: really that many active ads? landing: really a downloadable product with
+direct checkout?). If the finds don't fit what they can make, their filter is
+loose → offer "change some" and tighten it. Finally, offer to set up the daily
+scheduled run (unattended mode) — only once they're happy with 2-3 runs.
 
 # STEP 0 — HUNT SETTINGS (ask, never assume)
 

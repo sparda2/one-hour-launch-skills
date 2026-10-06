@@ -1,7 +1,103 @@
 ---
 name: cazador-de-ofertas
-description: Caza diaria de ofertas escalando en la biblioteca de anuncios de Meta según tu filtro de formato, y actualiza tu Google Sheet maestro (o Excel) con el histórico. Pide sus ajustes al inicio (o reutiliza los últimos). Usar cuando el usuario diga 'cazar ofertas', 'el cazador', 'buscar ofertas escalando' o pida el barrido de la hoja maestra.
+description: Caza diaria de ofertas escalando en la biblioteca de anuncios de Meta según tu filtro de formato, y actualiza tu Google Sheet maestro (o Excel) con el histórico. Pide sus ajustes al inicio (o reutiliza los últimos). Incluye una configuración guiada que lleva a cualquiera de 'acabo de subir este archivo' a su primera caza. Usar cuando el usuario diga 'cazar ofertas', 'el cazador', 'buscar ofertas escalando', 'configura el cazador', suba esta skill y pida configurarla, o pida el barrido de la hoja maestra.
 ---
+
+# CONFIGURACIÓN GUIADA — de "acabo de subir este archivo" a la primera caza
+
+Ejecuta esta sección PRIMERO siempre que el perfil (`launch-profile.md`,
+sección `## Offer hunter`) no diga `Setup: complete`, o cuando la persona pida
+configurar / reparar el cazador. Con la configuración completa, ve directo al
+PASO 0.
+
+**Cómo guiar (innegociable):**
+- Habla en el idioma de la persona. Asume que NO es técnica: una acción a la
+  vez, la ruta exacta de clics, qué va a ver y cómo saber que funcionó.
+- COMPRUEBA antes de preguntar: detecta tú todo lo que puedas (tools, red,
+  archivos, git). Pide a la persona solo lo que no puedes detectar ni hacer.
+- Agrupa todo lo que necesite una sesión NUEVA en UN solo reinicio (los
+  conectores y los cambios de red solo se cargan al iniciar sesión). Jamás le
+  hagas reiniciar dos veces si uno bastaba.
+- Lleva un checklist en el perfil (`## Offer hunter` → `Setup:` con cada paso
+  ✅/❌) y haz commit + push, para que el progreso sobreviva al reinicio.
+- Muestra el progreso en cada turno como checklist corto: ✅ hecho, 👉 ahora,
+  ⬜ siguiente.
+- Jamás pidas contraseñas, tokens ni API keys en el chat.
+
+**S1 — ¿Dónde estamos corriendo?**
+Comprueba `echo $CLAUDE_CODE_REMOTE` (`true` = sesión en la nube en
+claude.ai/code o la app de escritorio/móvil; si no, un ordenador local).
+- Nube: los archivos se BORRAN al terminar la sesión. El trabajo debe vivir en
+  un repositorio de GitHub donde la sesión pueda hacer push. Compruébalo con
+  `git remote -v` y un push de prueba (dry-run). Si no hay repo con escritura:
+  guíala para crear un repo privado (github.com/new → nombre
+  `my-launch-workspace` → Private → Create), asegúrate de que la app de Claude
+  en GitHub tenga acceso (github.com/apps/claude → Configure → añadir el
+  repo), y que abra una sesión NUEVA en ese repo y vuelva a subir este archivo.
+  Dale el primer mensaje exacto a pegar (S8).
+- Local: cualquier carpeta sirve; recomienda un repo git o una carpeta
+  sincronizada para los backups.
+
+**S2 — Instala la skill en el workspace (para que esté la próxima vez).**
+Si esta skill no está ya disponible como skill o plugin instalado, copia ESTE
+archivo a `.claude/skills/cazador-de-ofertas/SKILL.md` en el workspace
+(idéntico byte a byte; jamás edites sus reglas), y haz commit y push. Desde
+ahí, cualquier sesión en este workspace tiene `/cazador-de-ofertas`.
+
+**S3 — Detecta lo que falta (todo de una vez).** Busca en las tools
+disponibles (incluidas las diferidas / tool search) y prueba:
+- **Tool de la Ads Library de Meta** (p. ej. `ads_library_search`; el nombre
+  varía según el conector). Falta → ❌ Meta.
+- **Tools de Google Drive / Sheets** que puedan crear y escribir un Google
+  Sheet (solo si SALIDA = google-sheet, el valor por defecto). Faltan → ❌ Drive.
+- **Red (solo nube):** abre `https://www.facebook.com/ads/library/` y un sitio
+  cualquiera fuera de la lista permitida (p. ej. `https://gumroad.com`).
+  Bloqueado → ❌ Red. (Las landings de la competencia pueden estar en cualquier
+  dominio.)
+
+**S4 — Arregla todo en UNA ronda y luego UN reinicio.** Da una lista numerada
+solo con los ❌:
+- ❌ Meta → claude.ai → Configuración → Conectores
+  (claude.ai/customize/connectors) → busca el conector de Meta Ads en el
+  directorio, o "Add custom connector" con la URL de su servidor MCP de Meta →
+  Connect → inicia sesión en Meta → aprueba.
+- ❌ Drive → misma página → Google Drive → Connect → elige su cuenta de Google
+  → permite el acceso.
+- ❌ Red (nube) → en la barra del título de la sesión, abre el menú del entorno
+  → Edit → Network access → **Full** → Save.
+Luego: commit + push del checklist del perfil, y dile que abra una sesión
+NUEVA en el mismo repo y pegue el mensaje de retomar (S8). Si no hay ningún ❌,
+sáltate el reinicio.
+
+**S5 — Verifica tras el reinicio.** Repite S3. Si algo sigue en ❌ → explica
+la causa más probable en una línea (p. ej. "el conector se añadió después de
+abrir esta sesión") y el único arreglo. No sigas hasta que Meta funcione (sin
+Meta no hay caza). Si solo falla Drive, ofrece SALIDA = excel como alternativa.
+
+**S6 — Ajustes.** Ejecuta PASO 0 → "Cómo obtener los ajustes" (preguntas de
+primera vez, máximo 2 rondas). Ayuda a afinar TU_FILTRO y NICHOS_CIRCULOS si
+son vagos; jamás los inventes. Para PAGINAS_PROPIAS, enséñale a sacar el
+page_id (Ads Library → busca su página → clic → la URL muestra
+`view_all_page_id=NÚMERO`) o búscalos por nombre con la tool de Meta y
+confírmalos con la persona.
+
+**S7 — Prueba rápida (2 minutos, antes de la caza real).**
+- Meta: una consulta canary (p. ej. 'shoes', US, activos). Resultados > 0 → ✅.
+- Hoja: crea la hoja maestra (o abre la que te dio), escribe los encabezados
+  de las 4 pestañas, léelos de vuelta → ✅, y dale el link.
+- Banco de keywords: genéralo (PASO 0 → punto 5) y di dónde está.
+Marca `Setup: complete` en el perfil, haz commit + push y dile: "Configuración
+lista. Empiezo tu primera caza ahora (20-40 min)." y ve a LA RUTINA.
+
+**S8 — Mensaje para retomar (dalo cada vez que haga falta reiniciar):**
+`Continúa la configuración del cazador de ofertas — lee .claude/skills/cazador-de-ofertas/SKILL.md y retoma la CONFIGURACIÓN GUIADA desde el checklist de launch-profile.md.`
+
+**Después de la primera caza:** pídele que valide 2-3 hallazgos a mano (link
+de biblioteca: ¿de verdad tantos anuncios activos? landing: ¿de verdad un
+producto descargable con checkout directo?). Si los hallazgos no encajan con lo
+que puede hacer, su filtro está flojo → ofrece "cambiar algunos" y endurécelo.
+Por último, ofrece programar la corrida diaria (modo desatendido) — solo cuando
+le hayan convencido 2-3 corridas.
 
 # PASO 0 — AJUSTES DE LA CAZA (pregunta, jamás asumas)
 

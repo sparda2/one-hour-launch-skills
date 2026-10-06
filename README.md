@@ -1,6 +1,6 @@
 # One Hour Launch Skills
 
-> **Students: start with [`en/START-HERE.md`](en/START-HERE.md).** It covers installation, first-time setup and automation.
+> **Students: start with [`en/START-HERE.md`](en/START-HERE.md).** Fastest path: upload `en/skills/offer-hunter/SKILL.md` to a Claude Code session and say *"Set this up for me step by step"*. The skill guides you from zero to your first hunt.
 
 The full launch system as Claude Code skills.
 
