@@ -47,7 +47,9 @@ Winning Offer Spy. Once setup is complete, skip straight to STEP 0.
 **S1 — Detect what's missing (all at once).** Search the available tools
 (including deferred tools / tool search) and test:
 - **Meta Ad Library tool** (e.g. `ads_library_search`; the name varies by
-  connector). Missing → ❌ Meta.
+  connector). Missing → ❌ Meta. Run one canary query ('shoes', US, active):
+  an error about the ad account → ❌ Ad account (Meta only opens the Ad Library
+  tool to people with at least one ACTIVE ad account).
 - **Google Drive tools** that can search Drive, create a Google Sheet and
   read/write its cells. Missing → ❌ Drive.
 - **Network (only in a Claude Code cloud session, `echo $CLAUDE_CODE_REMOTE`
@@ -67,6 +69,8 @@ with only the ❌ items:
 - ❌ Meta → claude.ai → Settings → Connectors (claude.ai/customize/connectors)
   → find the Meta Ads connector in the directory, or "Add custom connector"
   with the URL of their Meta MCP server → Connect → log in to Meta → approve.
+- ❌ Ad account → business.facebook.com → create or reactivate an ad account
+  (it must be active; a payment method is usually required).
 - ❌ Drive → same page → Google Drive → Connect → choose their Google account
   → allow access.
 - ❌ Network → in the Claude Code session title bar, open the environment

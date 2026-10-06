@@ -1,77 +1,232 @@
 ---
-name: ads-routine
-description: Full daily creative pipeline for Meta Ads: reads your master products Sheet, researches the best advertisers via API in the Ad Library (zero browser), generates 5 new AI image ads per product, audits them one by one and delivers them to Drive with links in the Sheet. Asks for its settings at the start (or reuses the last ones). Use when the user says 'the ads routine', 'run the routine', 'regenerate the ads' or asks for the 5 ads of a product.
+name: winning-ads-creator
+description: Winning Ads Creator — full daily creative pipeline for Meta Ads. For each product in your master Google Sheet it researches the best advertisers in the world via the Ad Library API (zero browser), creates 5 new AI image ads modeled on real winners, audits them one by one and delivers them to your Google Drive with links in the sheet. Includes a guided first-time setup that takes anyone from "I just installed this" to their first 5 ads. Use when the user says 'winning ads creator', 'create my ads', 'the ads routine', 'run the routine', 'regenerate the ads', 'set up the winning ads creator', uploads this skill and asks to set it up, or asks for the 5 ads of a product.
 ---
 
-> Version 2 (Aug 4, 2026): 100% API research, winners bank, visual agent
-> and cost discipline — all measured in real production.
+> Version 2 of the routine (Aug 4, 2026): 100% API research, winners bank,
+> visual agent and cost discipline — all measured in real production.
+
+# WHERE EVERYTHING LIVES — the person's Google Drive
+
+Nothing is kept on the computer running this skill (cloud sessions are wiped
+when they end). Everything lives in a Drive folder called
+**"Winning Ads Creator"**:
+
+```
+Winning Ads Creator/
+├── Winning Ads Creator — Master   (Google Sheet, tabs below)
+├── Ads/<PRODUCT>/<YYYY-MM-DD>/AD01.jpg … AD05.jpg
+├── Research/<PRODUCT>_<DATE>.md
+└── Winners/<PRODUCT>/…            (winner creatives seen by the VISUAL agent)
+```
+
+| Tab | What it holds |
+|---|---|
+| Products | PRODUCT \| PRODUCT LINK (landing) \| LANGUAGE \| RESEARCH LINK \| CREATIVES LINK — one row = one product |
+| Settings | setting \| value \| last updated — the person's answers + the setup checklist |
+| My Rules | rule \| added on — the person's own extra rules |
+| Winners Bank | date \| product \| advertiser \| page_id \| ad link \| duplications \| days running \| hook \| visual description \| spatial formula \| text position \| transcription |
+| Concepts Log | date \| product \| AD# \| winner modeled \| formula \| funnel level \| headline \| 2 alternates |
+| Landings Cache | product \| landing URL \| verified figures \| guarantee \| hero mockup URL \| real headlines \| verified on |
+| Run Log | date \| product \| stage \| agent-minutes \| notes (cost rule 5) |
+
+**Two ways data moves (both cheap):**
+- **Tables** (tabs above) → the Google Sheets / Google Drive connector. Read
+  only the rows you need (e.g. the bank rows of this product's niche).
+- **Files** (JPGs, reports) → NEVER through the chat (an image as text costs
+  a fortune). They go through the person's **Drive uploader** with
+  `assets/drive_sync.py` (next to this file), run with
+  `UPLOADER_URL` / `UPLOADER_TOKEN` exported from the Settings tab.
+  Local alternative: on a computer with Google Drive for desktop, write files
+  straight into the synced "Winning Ads Creator" folder instead.
+
+**`_assets/` = the local working folder of ONE run.** At the start of a run,
+hydrate it from Drive: bank rows → `_assets/bank.md`, Landings Cache →
+`_assets/landings_cache.json`, Concepts Log → `_assets/concepts.md`,
+yesterday's 5 ads of each product → `_assets/yesterday/<PRODUCT>/`
+(`drive_sync.py pull`). The cost rules' "handoff through disk" happens here.
+At the end, persist back (STEP 6).
+
+**Finding it in a new session:** search Drive for the exact name
+"Winning Ads Creator — Master". One match → use it. Several → ask which.
+None → first-time setup. Never create a second master sheet.
+
+This skill has NO config block to edit. This skill is the canonical source of
+the routine: scheduled runs only point at it. Editing the routine = editing
+this file.
+
+# GUIDED SETUP — from "I just installed this" to the first 5 ads
+
+Run this section FIRST whenever there is no master sheet yet, or its Settings
+tab doesn't say `Setup = complete`, or the person asks to set up / repair the
+Winning Ads Creator. Once setup is complete, skip straight to STEP 0.
+
+**How to guide (non-negotiable):**
+- Talk in the person's language. Assume they are NOT technical: one action at
+  a time, exact click paths, what they will see, and how to tell it worked.
+- CHECK before asking: detect everything you can yourself (tools, network,
+  environment variables). Only ask for what you can't detect or do.
+- Batch every fix that needs a NEW session into ONE restart (connectors,
+  network and environment variables only load when a session starts).
+- Show progress each turn as a short checklist: ✅ done, 👉 now, ⬜ next.
+- Never ask for passwords, tokens or API keys in the chat. Keys go into the
+  environment's variables (see S2), never into the sheet or the chat.
+
+**S1 — Detect what's missing (all at once).** Search the available tools
+(including deferred tools / tool search) and test:
+- **Meta Ad Library tool** (e.g. `ads_library_search`). Missing → ❌ Meta.
+  Run one canary query ('shoes', US, active). An error about the ad account →
+  ❌ Ad account (Meta only opens the Ad Library tool to people with at least
+  one ACTIVE ad account).
+- **Google Drive + Google Sheets tools** (search, create a sheet, read/write
+  cells). Missing → ❌ Drive.
+- **Network (Claude Code cloud session, `echo $CLAUDE_CODE_REMOTE` = true):**
+  fetch `https://www.facebook.com/ads/library/`, `https://script.google.com`
+  and one random site (e.g. `https://gumroad.com`). Blocked → ❌ Network.
+- **Headless browser** for the VISUAL agent: `python3 -c "import playwright"`
+  and a Chromium binary. Missing → install it yourself (`pip install
+  playwright`; use the pre-installed Chromium if present, else `playwright
+  install chromium`). Only ask if that fails.
+- **Image engine:** ask ONE question (AskUserQuestion when available): which
+  image generator will they use? Offer: an image API they already pay for
+  (e.g. OpenAI images, Google Gemini/Imagen, fal.ai, Replicate — the most
+  powerful they have, max resolution, 1:1, ideally accepting a reference
+  image for their product mockup), a CLI, or a connector. For an API, check
+  its key exists as an environment variable (e.g. `OPENAI_API_KEY`,
+  `GEMINI_API_KEY`, `FAL_KEY`, `REPLICATE_API_TOKEN`) — test `[ -n "$NAME" ]`,
+  never print it. Missing → ❌ Key. Warn: a connector that returns images
+  into the chat is expensive (cost rule 2) — prefer an API.
+- **The skill itself** shows up as an installed skill (not only an uploaded
+  file). Not installed → ❌ Install.
+
+**S2 — Fix everything in ONE round, then ONE restart.** One numbered list
+with only the ❌ items:
+- ❌ Install → claude.ai → Settings → Capabilities → Skills → "Upload skill"
+  → choose the skill's ZIP (from the pack). Installed skills are available in
+  the Claude app AND in Claude Code cloud sessions of the same account.
+- ❌ Meta → claude.ai → Settings → Connectors (claude.ai/customize/connectors)
+  → the Meta Ads connector from the directory, or "Add custom connector" with
+  their Meta MCP URL → Connect → log in to Meta → approve.
+- ❌ Ad account → business.facebook.com → create or reactivate an ad account
+  (it must be active; a payment method is usually required).
+- ❌ Drive → same connectors page → Google Drive (and Google Sheets if listed
+  separately) → Connect → their Google account → allow.
+- ❌ Network → in the Claude Code session title bar, environment menu → Edit →
+  Network access → **Full** → Save.
+- ❌ Key → get the API key from the provider's dashboard → in the same
+  environment Edit screen, add it under **Environment variables** as
+  `NAME=key` (e.g. `OPENAI_API_KEY=…`) → Save. Never paste it in the chat.
+Then tell them to start a NEW session (Claude desktop app → Code → Cloud, or
+claude.ai/code) and send the resume message (S9). If nothing is ❌, skip it.
+
+**S3 — Verify after the restart.** Re-run S1. Anything still ❌ → the most
+likely cause in one line and the one fix. Don't continue until Meta, Drive
+and the image engine all work.
+
+**S4 — Create the home.** Search Drive for "Winning Ads Creator — Master".
+None → create the "Winning Ads Creator" folder (Drive connector, folder mime
+type) and the master sheet inside it with the 7 tabs and header rows (bold,
+colored, frozen, filters on). Read the headers back. Give them the link.
+
+**S5 — The Drive uploader (one time, ~3 minutes).** Explain in one line why:
+"so your ad images go straight to your Drive without costing tokens".
+1. Generate a random 32-character token (letters + digits).
+2. Read `assets/drive-uploader.gs`, fill in ROOT_FOLDER_ID (the "Winning Ads
+   Creator" folder id) and TOKEN, and give them the full code in one block.
+3. Guide: script.google.com → **New project** → select all, paste → name it
+   "Winning Ads Creator uploader" → 💾 Save → **Deploy → New deployment** →
+   ⚙️ type **Web app** → Execute as **Me** → Who has access **Anyone** →
+   **Deploy** → **Authorize access** → choose their account → if Google says
+   "Google hasn't verified this app": **Advanced → Go to … (unsafe)** → Allow
+   (it's their own script) → copy the **Web app URL** and paste it here.
+4. Save UPLOADER_URL and UPLOADER_TOKEN in the Settings tab (the sheet is
+   private; tell them not to share it).
+5. Test: `drive_sync.py ping`, then upload a tiny test file to `Ads/_test`,
+   list it, pull it back. All ok → ✅. Failing → most common causes: access
+   not set to "Anyone", or they copied the editor URL instead of the /exec URL.
+On a local computer with Google Drive for desktop, offer to skip S5 and save
+files straight into the synced folder.
+
+**S6 — Products.** Ask for their products (or import from the Winning Offer
+Spy sheet if they want): for each, the name, the landing page URL and the ad
+language. Write them to the Products tab. Open each landing ONCE: confirm it
+loads, and fill the Landings Cache (real figures, guarantee, hero mockup URL,
+real headlines — STEP 5 rule 5).
+
+**S7 — Settings.** Run STEP 0 → "How to get the settings" (at most 2
+rounds). OWN_PAGES: reuse the Winning Offer Spy's if its master sheet exists
+(confirm), else ask (page_id: Ad Library → search their page → click it →
+the URL shows `view_all_page_id=NUMBER`). NICHE_RULES: ask their niche and
+propose the rules for it.
+
+**S8 — Smoke test (before the real run).**
+- Image engine: ONE cheap, small generation from a simple prompt → save →
+  upload to `Ads/_test/` → give them the link to look at → ✅.
+- Meta: the canary from S1 already passed.
+Write `Setup = complete` in Settings, then say: "Setup done. Creating your
+first 5 ads now for <ONE product> (≈ DEADLINE). You can close this window —
+it keeps running in the cloud." and go to THE ROUTINE with
+PRODUCTS_THIS_RUN = that ONE product (first run: always one product).
+
+**S9 — Resume message (give it whenever a restart is needed):**
+`Continue setting up the Winning Ads Creator from where we left off.`
+(The checklist lives in the Settings tab. If the skill isn't installed yet,
+they attach the skill file to that message.)
+
+**After the first run:** ask them to look at the 5 ads with their own eyes:
+perfect text? professional photography or template look? does every figure
+exist on their landing? does it look like a real winner or generic? Every
+"I don't like X" → offer to add it to the My Rules tab (that's how the
+original routine was built: through rejections). Repeat with that product for
+2-3 days; when it comes out well without touching anything, add the rest of
+the products. Offer the daily scheduled run (unattended) only after that.
 
 # STEP 0 — RUN SETTINGS (ask, never assume)
 
-This skill has NO config block to edit. It gets its settings from the person
-at the start of every run, and remembers the last answers in a profile file it
-writes itself. This skill is the canonical source of the routine: scheduled
-runs only point at it. Editing the routine = editing this file.
-
-## The settings
+## The settings (stored in the Settings tab)
 
 | Setting | What it is | Default if the person doesn't care |
 |---|---|---|
-| MASTER_SHEET | ID or URL of the products Google Sheet. Columns: PRODUCT \| PRODUCT LINK (landing) \| LANGUAGE \| RESEARCH LINK \| CREATIVES LINK. One row = one product | **None — must be asked** |
-| PRODUCTS_THIS_RUN | Which Sheet rows to run | All rows (on the very first run: suggest ONE product only) |
-| BASE_FOLDER | Ads folder: one subfolder per product + `_assets/` (research, bank, specs, audit) | `./ads/` in the current project |
-| IMAGE_ENGINE | The most powerful AI image generator available and its exact command (CLI or connector), max resolution, 1:1 | **None — must be asked** |
+| PRODUCTS_THIS_RUN | Which Products rows to run | All rows (first run: ONE product) |
+| IMAGE_ENGINE | The most powerful AI image generator available, how to call it (API + env variable name, CLI command, or connector), max resolution, 1:1 | **None — must be asked** |
 | ENGINE_LIMITS | The image plan's simultaneous job limit — enforced with a semaphore, not by launching fewer | Ask; 4 if unknown |
-| OWN_PAGES | The person's own pages, EXCLUDED from competitor research | From the profile's `## Shared` section; else ask |
+| OWN_PAGES | The person's own pages, EXCLUDED from competitor research | From the Winning Offer Spy sheet if it exists; else ask |
 | NICHE_RULES | Compliance by niche: health = no medical claims or dosages; money = no income promises; etc. | No medical claims, dosages, income promises, before/after or invented ratings |
 | TOP_MODEL | The most powerful Claude model on the plan — ONLY where design happens: director+critic and repairer | The most capable model available |
 | ECO_MODEL | An economical model — research, generation, audit and the orchestrating session | A Sonnet-class model |
 | DEADLINE | Delivery cutoff. Whatever doesn't make it is reported with its cause — the run is not stretched | 1 hour after start |
-
-## The profile file
-
-`launch-profile.md` in the root of the current project, section
-`## Ads routine` (other skills of this pack keep their own sections in the
-same file; `## Shared` holds OWN_PAGES for every skill). It stores the last
-answers with their date. It is written BY THIS SKILL — nobody has to edit it
-by hand (they may, if they want). Never store passwords, tokens or API keys in
-it.
+| UPLOADER_URL / UPLOADER_TOKEN | The Drive uploader (S5) | Set by the setup |
 
 ## Personal rules
 
-If `my-rules.md` exists in the root of the current project, read it before
-starting and apply every rule in it as an extra HARD rule for this run. It is
-how the person adds their own lessons without editing this skill (updates of
-the pack would overwrite edits here). If a personal rule contradicts a rule of
-this skill, follow the personal rule and mention it in the final summary.
-When the person rejects something in a run and states a rule, offer to append
-it to `my-rules.md` (create the file if needed).
+Read the My Rules tab before starting and apply every rule in it as an extra
+HARD rule for this run. It is how the person adds their own lessons without
+editing this skill (updates of the pack would overwrite edits here). If a
+personal rule contradicts a rule of this skill, follow the personal rule and
+mention it in the final summary. When the person rejects something and states
+a rule, offer to add it to the My Rules tab.
 
 ## How to get the settings
 
-1. **Settings in the invoking message win.** E.g. `/ads-routine only for
-   <PRODUCT>` → PRODUCTS_THIS_RUN is set; don't ask it again.
+1. **Settings in the invoking message win.** E.g. `/winning-ads-creator only
+   for <PRODUCT>` → PRODUCTS_THIS_RUN is set; don't ask it again.
 2. **Interactive run (a person is in the chat):**
-   - Profile exists → show the saved settings as one compact table and ask ONE
-     question: "Run with these, change some, or start fresh?"
-   - No profile (first time) → ask for the missing settings in AT MOST 2
-     rounds. Use the AskUserQuestion tool when available for the choice-type
-     ones, plain chat for the free-text ones. Give an example with each
-     question and offer the defaults.
-   - First time only: test the IMAGE_ENGINE with ONE cheap generation before
-     the pipeline (command works, credits OK), and confirm the MASTER_SHEET can
-     be read. If either fails, STOP and say exactly what to fix.
-   - Then print the final settings table and START (no extra confirmation
-     round).
+   - Settings tab filled → show the saved settings as one compact table and
+     ask ONE question: "Run with these, change some, or start fresh?"
+   - First time → ask the missing settings in AT MOST 2 rounds
+     (AskUserQuestion for choice-type ones, plain chat for free text), with
+     an example for each and the defaults offered.
+   - Then print the final settings table and START (no extra confirmation).
 3. **Unattended run (scheduled task, Grok Bot, headless `claude -p`, or the
-   message says "unattended"):** NEVER ask — nobody is there to answer. Use
-   the settings in the message, fill the rest from the profile, then defaults.
-   If MASTER_SHEET or IMAGE_ENGINE are still missing: STOP without running and
-   print which settings are missing plus an example command that includes
-   them.
-4. **Save** the final settings to the profile (update the `## Ads routine`
-   section in place, with today's date; OWN_PAGES goes to `## Shared`) before
-   starting.
+   message says "unattended"):** NEVER ask. Use the message, then the
+   Settings tab, then defaults. If the master sheet, the Products tab rows,
+   IMAGE_ENGINE or the uploader are missing: STOP without running and print
+   what is missing plus an example command that includes it.
+4. **Save** the final settings to the Settings tab (with today's date).
+5. **Pre-flight (every run):** Meta tool, Sheets read/write,
+   `drive_sync.py ping` and the image engine's key must all work BEFORE the
+   pipeline starts. If any fails, STOP and say exactly what to fix (S1-S2) —
+   never generate ads that can't be delivered.
 
 # THE ROUTINE
 
@@ -110,8 +265,9 @@ Report short, results, zero theory.
 
 ## STEP 1 — Read the source of truth
 
-Read the MASTER_SHEET (Google Drive connector). Each row = one product with its
-landing and its language. New product (row without a folder in BASE_FOLDER) →
+Read the Products tab of the master sheet (Google Sheets connector). Each row
+= one product with its landing and its language. New product (row without a
+folder in the Drive `Ads/` folder) →
 create its folder and run the full pipeline for it.
 
 ## STEP 2 — API research (all products, every day)
@@ -134,7 +290,7 @@ winner even without duplications. ALWAYS EXCLUDE your OWN_PAGES.
 
 **THE BANK — your accumulated asset.** The API gives signal but NOT images. The
 visual formula comes from your BANK: previous research reports
-(`_assets/research/`) and the "Winning creatives" sheet of the research Excels,
+(`_assets/research/`, pulled from Drive `Research/`) and the Winners Bank tab,
 where every winner SEEN was deconstructed (visual description, spatial
 formula, transcription, hook). Research cross-checks each API candidate against
 the bank and marks it **BANK: yes / no**:
@@ -283,10 +439,21 @@ they were today's.
 ## STEP 6 — Delivery
 
 JPG at NATIVE resolution (no rescaling, quality ~95) as AD01.jpg…AD05.jpg in
-`BASE_FOLDER/<PRODUCT>/<YYYY-MM-DD>/`. Verify resolution and FRESHNESS (JPG's
-mtime ≥ its source's mtime — an old JPG passes the size check). Don't delete
-previous days' folders. Write the folder link in the Sheet's CREATIVES LINK
-column, and the research Excel's link in RESEARCH LINK.
+`_assets/out/<PRODUCT>/<YYYY-MM-DD>/`. Verify resolution and FRESHNESS (JPG's
+mtime ≥ its source's mtime — an old JPG passes the size check). Then upload
+each one to Drive `Ads/<PRODUCT>/<YYYY-MM-DD>/` with `drive_sync.py upload`
+and check every upload returned ok (a failed upload = "not delivered", never
+"delivered"). Don't delete previous days' folders. Write the Drive folder link
+in the Products tab's CREATIVES LINK column, and the research report's Drive
+link (upload `_assets/research/<PRODUCT>_<DATE>.md` to `Research/`) in
+RESEARCH LINK.
+
+**Save the memory (same step, every run):** append the new deconstructed
+winners to the Winners Bank tab, the 5 concepts to the Concepts Log, any
+new/changed landing data to the Landings Cache, and the per-stage
+agent-minutes to the Run Log. Upload new winner JPGs to `Winners/<PRODUCT>/`.
+Tomorrow's run hydrates from these — skipping this step makes tomorrow repeat
+today and re-pay the VISUAL agent.
 
 ## STEP 7 — Final summary
 

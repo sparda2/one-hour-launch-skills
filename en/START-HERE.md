@@ -43,7 +43,7 @@ The sections below are the reference: what each piece is, other ways to install 
 | 1 | **Winning Offer Spy** | Finds offers that are scaling right now in Meta's Ad Library and logs them in a master Google Sheet in your Drive, with their history | ✅ Ready |
 | 2 | **Product Modeler** | Turns a winning offer into the spec of your own product | 🚧 Coming |
 | 3 | **Funnel Modeler** | Builds your funnel using a proven landing page structure | 🚧 Coming |
-| 4 | **Ads Routine** | Creates 5 new image ads per product every day, modeled on the world's best advertisers | ✅ Ready |
+| 4 | **Winning Ads Creator** | Creates 5 new image ads per product every day, modeled on the world's best advertisers, and delivers them to your Drive | ✅ Ready |
 
 Each step feeds the next one: **winning offer → product → funnel → ads.**
 
@@ -55,13 +55,13 @@ Each step feeds the next one: **winning offer → product → funnel → ads.**
 |---|---|---|
 | A Claude plan that includes **Claude Code** (Pro or Max) | Everything | You can open Claude Code (desktop app, terminal, or claude.ai/code) |
 | A **GitHub account** with access to this pack | Installing and updating the skills | You accepted the GitHub invite you got after purchase, and you can open the pack's repository page |
-| A **Meta Ads connector** that includes the Ad Library search tool | Winning Offer Spy, Ads Routine | Ask Claude: *"Do you have access to ads_library_search?"* |
-| The **Google Drive** connector | Winning Offer Spy (writes your master Google Sheet), Ads Routine (reads your products Sheet) | Ask Claude: *"Can you read my Google Sheet <link>?"* |
-| An **AI image generator** with credits (CLI or connector) | Ads Routine | You know the exact command or connector name |
+| A **Meta Ads connector** that includes the Ad Library search tool | Winning Offer Spy, Winning Ads Creator (you also need an **active Meta ad account**) | Ask Claude: *"Do you have access to ads_library_search?"* |
+| The **Google Drive** connector | Winning Offer Spy and Winning Ads Creator (each keeps its master Google Sheet in your Drive) | Ask Claude: *"Can you read my Google Sheet <link>?"* |
+| An **AI image generator** with credits (an API key is best) | Winning Ads Creator | The setup wizard tests it for you |
 
 You add connectors at **claude.ai → Settings → Connectors**. Start a new Claude Code session after connecting one, because connectors only load when a session starts.
 
-> You only need the Meta connector to start with the Winning Offer Spy. Leave the Ads Routine requirements for later.
+> You only need the Meta connector to start with the Winning Offer Spy. Leave the Winning Ads Creator requirements for later. Its own wizard sets them up: just upload `dist/winning-ads-creator-EN.zip` the same way and say *"Set up the Winning Ads Creator for me step by step."*
 
 ---
 
@@ -87,7 +87,7 @@ You add connectors at **claude.ai → Settings → Connectors**. Start a new Cla
    /plugin install one-hour-launch@one-hour-launch-skills
    ```
 4. Restart Claude Code, or start a new session.
-5. Check it worked: type `/` and look for `winning-offer-spy` and `ads-routine` in the list. They may appear as `one-hour-launch:winning-offer-spy`.
+5. Check it worked: type `/` and look for `winning-offer-spy` and `winning-ads-creator` in the list. They may appear as `one-hour-launch:winning-offer-spy`.
 
 ### Option B — Claude Code on the web
 
@@ -151,11 +151,11 @@ You don't need a keyword bank or a sheet. On the first run the spy creates both 
 
 ### Where your answers are saved
 
-**Winning Offer Spy:** in the **Settings** tab of your "Winning Offer Spy — Master" Google Sheet. **Ads Routine:** in `launch-profile.md` in your work folder. The skills write these themselves. You can look at them, but you never have to edit them.
+**Winning Offer Spy:** in the **Settings** tab of your "Winning Offer Spy — Master" Google Sheet. **Winning Ads Creator:** in the **Settings** tab of your "Winning Ads Creator — Master" sheet. The skills write these themselves. You can look at them, but you never have to edit them.
 
 ### Your own rules
 
-When a result isn't what you want, say *"add to my rules: …"*. The rule is saved in the **My Rules** tab of your Winning Offer Spy sheet (Ads Routine: `my-rules.md` in your work folder), and every run reads it automatically. Updating the pack never overwrites your rules.
+When a result isn't what you want, say *"add to my rules: …"*. The rule is saved in the **My Rules** tab of your Winning Offer Spy sheet (the Winning Ads Creator has its own My Rules tab), and every run reads it automatically. Updating the pack never overwrites your rules.
 
 ### Changing settings later
 

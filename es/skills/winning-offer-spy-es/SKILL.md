@@ -50,7 +50,10 @@ reparar Winning Offer Spy. Con la configuración completa, ve directo al PASO 0.
 **S1 — Detecta lo que falta (todo de una vez).** Busca en las tools
 disponibles (incluidas las diferidas / tool search) y prueba:
 - **Tool de la Ads Library de Meta** (p. ej. `ads_library_search`; el nombre
-  varía según el conector). Falta → ❌ Meta.
+  varía según el conector). Falta → ❌ Meta. Haz una consulta canary ('shoes',
+  US, activos): un error sobre la cuenta publicitaria → ❌ Cuenta publicitaria
+  (Meta solo abre la tool de la Ads Library a quien tiene al menos una cuenta
+  publicitaria ACTIVA).
 - **Tools de Google Drive** que puedan buscar en Drive, crear un Google Sheet
   y leer/escribir sus celdas. Faltan → ❌ Drive.
 - **Red (solo en una sesión en la nube de Claude Code, `echo
@@ -72,6 +75,8 @@ solo con los ❌:
   (claude.ai/customize/connectors) → busca el conector de Meta Ads en el
   directorio, o "Add custom connector" con la URL de su servidor MCP de Meta →
   Connect → inicia sesión en Meta → aprueba.
+- ❌ Cuenta publicitaria → business.facebook.com → crea o reactiva una cuenta
+  publicitaria (debe estar activa; normalmente pide un método de pago).
 - ❌ Drive → misma página → Google Drive → Connect → elige su cuenta de Google
   → permite el acceso.
 - ❌ Red → en la barra del título de la sesión de Claude Code, abre el menú del

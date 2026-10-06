@@ -12,7 +12,7 @@ The full launch system as Claude Code skills.
 | 1. Find winning offers | `winning-offer-spy` | `winning-offer-spy-es` | ✅ v1 |
 | 2. Model the product | `product-modeler` | `modelar-producto` | 🚧 to build |
 | 3. Model the funnel | `funnel-modeler` | `modelar-funnel` | 🚧 to build |
-| 4. Create the ads | `ads-routine` | `rutina-de-ads` | ✅ v2 |
+| 4. Create the ads | `winning-ads-creator` | `creador-de-ads-ganadores` | ✅ v2 |
 
 Each step's output feeds the next one: winning offer → product spec → funnel → ads.
 
