@@ -78,11 +78,15 @@ Winning Ads Creator. Once setup is complete, skip straight to STEP 0.
   Run one canary query ('shoes', US, active). An error about the ad account →
   ❌ Ad account (Meta only opens the Ad Library tool to people with at least
   one ACTIVE ad account).
-- **Google Drive + Google Sheets tools** (search, create a sheet, read/write
-  cells). Missing → ❌ Drive.
+- **Google Drive** tools (search, create files) AND **Google Sheets** tools
+  (read/write cells) — TWO separate connectors. Either missing → ❌ Drive /
+  ❌ Sheets.
 - **Network (Claude Code cloud session, `echo $CLAUDE_CODE_REMOTE` = true):**
-  fetch `https://www.facebook.com/ads/library/`, `https://script.google.com`
-  and one random site (e.g. `https://gumroad.com`). Blocked → ❌ Network.
+  curl `https://gumroad.com`, `https://www.google.com` and
+  `https://script.google.com`. Blocked (proxy 403 / "EGRESS_BLOCKED") →
+  ❌ Network. ⚠️ Don't test with facebook.com: Facebook answers 403 to every
+  script even with Full network — normal; the Ad Library is read through the
+  Meta connector.
 - **Headless browser** for the VISUAL agent: `python3 -c "import playwright"`
   and a Chromium binary. Missing → install it yourself (`pip install
   playwright`; use the pre-installed Chromium if present, else `playwright
@@ -104,13 +108,15 @@ with only the ❌ items:
 - ❌ Install → claude.ai → Settings → Capabilities → Skills → "Upload skill"
   → choose the skill's ZIP (from the pack). Installed skills are available in
   the Claude app AND in Claude Code cloud sessions of the same account.
-- ❌ Meta → claude.ai → Settings → Connectors (claude.ai/customize/connectors)
-  → the Meta Ads connector from the directory, or "Add custom connector" with
-  their Meta MCP URL → Connect → log in to Meta → approve.
+- ❌ Meta → claude.ai → **Customize → Connectors**
+  (claude.ai/customize/connectors) → **+** → **Add custom connector** →
+  Name: `Meta` → URL: `https://mcp.facebook.com/ads` → **Add** → **Connect**
+  → log in with the Facebook account that manages their ad account → approve
+  ALL the permissions it asks for → "Connected".
 - ❌ Ad account → business.facebook.com → create or reactivate an ad account
   (it must be active; a payment method is usually required).
-- ❌ Drive → same connectors page → Google Drive (and Google Sheets if listed
-  separately) → Connect → their Google account → allow.
+- ❌ Drive / ❌ Sheets → same Connectors page → **Google Drive** → Connect →
+  Allow; then **Google Sheets** → Connect → Allow.
 - ❌ Network → in the Claude Code session title bar, environment menu → Edit →
   Network access → **Full** → Save.
 - ❌ Key → get the API key from the provider's dashboard → in the same

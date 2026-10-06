@@ -11,13 +11,13 @@
       "name": "one-hour-launch",
       "source": "./en",
       "description": "Launch system in English: Winning Offer Spy, product modeling, funnel modeling and Winning Ads Creator.",
-      "version": "0.7.0"
+      "version": "0.8.0"
     },
     {
       "name": "one-hour-launch-es",
       "source": "./es",
       "description": "Sistema de lanzamiento en español: Winning Offer Spy, modelado de producto, modelado de funnel y Creador de Ads Ganadores.",
-      "version": "0.7.0"
+      "version": "0.8.0"
     }
   ]
 }

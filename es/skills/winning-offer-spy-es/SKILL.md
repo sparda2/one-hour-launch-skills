@@ -47,43 +47,69 @@ reparar Winning Offer Spy. Con la configuración completa, ve directo al PASO 0.
   ⬜ siguiente.
 - Jamás pidas contraseñas, tokens ni API keys en el chat.
 
+**S0 — Esto TIENE que correr en Claude Code, no en el chat normal de Claude.**
+El spy tiene que abrir la landing de cada competidor (verificación
+obligatoria), correr mucho rato y guardar su trabajo — solo Claude Code puede.
+Comprueba: ¿tienes una tool de shell/Bash? No → estás en el chat normal de
+Claude: PARA y dile: "Abre la app de escritorio de Claude → **Code** → elige
+**Cloud** (o entra en claude.ai/code), abre una sesión nueva y envía:
+*Configura Winning Offer Spy paso a paso.*" Desde el chat normal no funciona
+nada más.
+
 **S1 — Detecta lo que falta (todo de una vez).** Busca en las tools
 disponibles (incluidas las diferidas / tool search) y prueba:
-- **Tool de la Ads Library de Meta** (p. ej. `ads_library_search`; el nombre
-  varía según el conector). Falta → ❌ Meta. Haz una consulta canary ('shoes',
-  US, activos): un error sobre la cuenta publicitaria → ❌ Cuenta publicitaria
-  (Meta solo abre la tool de la Ads Library a quien tiene al menos una cuenta
-  publicitaria ACTIVA).
-- **Tools de Google Drive** que puedan buscar en Drive, crear un Google Sheet
-  y leer/escribir sus celdas. Faltan → ❌ Drive.
-- **Red (solo en una sesión en la nube de Claude Code, `echo
-  $CLAUDE_CODE_REMOTE` = true):** abre `https://www.facebook.com/ads/library/`
-  y un sitio cualquiera fuera de la lista permitida (p. ej.
-  `https://gumroad.com`). Bloqueado → ❌ Red. (Las landings de la competencia
-  pueden estar en cualquier dominio.)
+- **Tool de la Ads Library de Meta** (`ads_library_search`). Falta → ❌ Meta.
+  Si está: haz una consulta canary ('shoes', US, activos, límite 2). Devuelve
+  resultados con un `estimated_total_count` → ✅. Error sobre la cuenta
+  publicitaria → ❌ Cuenta publicitaria (Meta solo abre la tool de la Ads
+  Library a quien tiene al menos una cuenta publicitaria ACTIVA).
+- Tools de **Google Drive** (buscar, crear archivos) Y de **Google Sheets**
+  (leer/escribir celdas). Son DOS conectores distintos. Falta alguno →
+  ❌ Drive / ❌ Sheets.
+- **Red (sesión en la nube, `echo $CLAUDE_CODE_REMOTE` = true):** haz curl a
+  `https://gumroad.com` y `https://www.google.com`. Los dos 200 → ✅.
+  Bloqueado (403 del proxy / "EGRESS_BLOCKED") → ❌ Red.
+  ⚠️ NO pruebes con facebook.com: Facebook responde 403 a cualquier script
+  aunque la red esté en Full. Es normal y no afecta — la Ads Library se lee
+  por el conector de Meta, no por la red.
 - **La skill misma** queda instalada para la próxima vez: aparece como skill
   disponible (no solo como archivo subido a este chat). Si solo se subió el
   archivo → ❌ Instalar.
 
 **S2 — Arregla todo en UNA ronda y luego UN reinicio.** Una lista numerada
-solo con los ❌:
-- ❌ Instalar → claude.ai → Configuración → Capacidades → Skills → "Subir
+solo con los ❌, con estos pasos exactos (probados de punta a punta):
+- ❌ Instalar → claude.ai → **Configuración → Capacidades → Skills** → "Subir
   skill" → elige el ZIP de la skill (del pack). Las skills subidas ahí están
   disponibles en la app de Claude Y en las sesiones en la nube de Claude Code
   de la misma cuenta.
-- ❌ Meta → claude.ai → Configuración → Conectores
-  (claude.ai/customize/connectors) → busca el conector de Meta Ads en el
-  directorio, o "Add custom connector" con la URL de su servidor MCP de Meta →
-  Connect → inicia sesión en Meta → aprueba.
-- ❌ Cuenta publicitaria → business.facebook.com → crea o reactiva una cuenta
-  publicitaria (debe estar activa; normalmente pide un método de pago).
-- ❌ Drive → misma página → Google Drive → Connect → elige su cuenta de Google
-  → permite el acceso.
+- ❌ Meta → claude.ai → **Personalizar → Conectores**
+  (claude.ai/customize/connectors) → **+** → **Añadir conector
+  personalizado** → Nombre: `Meta` → URL: `https://mcp.facebook.com/ads` →
+  **Añadir** → **Conectar** → inicia sesión con la cuenta de Facebook que
+  gestiona su Business / cuenta publicitaria → aprueba TODOS los permisos que
+  pide (anuncios, negocio, páginas) → aparece "Conectado".
+- ❌ Cuenta publicitaria → business.facebook.com → Configuración del negocio →
+  Cuentas publicitarias → crea o reactiva una (debe estar ACTIVA; Meta suele
+  pedir un método de pago). Luego desconecta y vuelve a conectar el conector
+  de Meta para que la vea.
+- ❌ Drive / ❌ Sheets → misma página de Conectores → **Google Drive** →
+  Conectar → su cuenta de Google → Permitir. Luego **Google Sheets** →
+  Conectar → Permitir.
 - ❌ Red → en la barra del título de la sesión de Claude Code, abre el menú del
-  entorno → Edit → Network access → **Full** → Save.
+  entorno → **Edit** → Network access → **Full** → Save. (Aplica a las
+  sesiones que se abran después de guardar.)
 Luego dile que abra una sesión NUEVA (app de escritorio de Claude → Code →
-Cloud, o claude.ai/code) y envíe el mensaje para retomar (S7). Si no hay
-ningún ❌, sáltate el reinicio.
+Cloud, o claude.ai/code), compruebe en el menú de conectores de esa sesión
+que Meta, Google Drive y Google Sheets están ACTIVADOS, y envíe el mensaje
+para retomar (S7). Consejo: elige el modo de permisos **Auto** para la sesión,
+así la caza de 20-40 minutos no se para a pedir aprobaciones. Si no hay ningún
+❌, sáltate el reinicio.
+
+**Cómo puede comprobarlo por su cuenta (dale estos prompts):**
+- `¿tienes acceso a ads_library_search?` → debe decir que sí.
+- `Haz una búsqueda de prueba en la Ads Library: "shoes", US, anuncios activos.`
+  → debe mostrar anuncios y un conteo total estimado.
+- `Abre https://gumroad.com y dime su título.` → debe funcionar.
 
 **S3 — Verifica tras el reinicio.** Repite S1. Si algo sigue en ❌ → explica
 la causa más probable en una línea (p. ej. "el conector se añadió después de

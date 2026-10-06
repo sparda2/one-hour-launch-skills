@@ -84,12 +84,15 @@ disponibles (incluidas las diferidas / tool search) y prueba:
   ❌ Meta. Haz una consulta canary ('shoes', US, activos). Error sobre la
   cuenta publicitaria → ❌ Cuenta publicitaria (Meta solo abre la tool de la
   Ads Library a quien tiene al menos una cuenta publicitaria ACTIVA).
-- **Tools de Google Drive + Google Sheets** (buscar, crear una hoja,
-  leer/escribir celdas). Faltan → ❌ Drive.
+- Tools de **Google Drive** (buscar, crear archivos) Y de **Google Sheets**
+  (leer/escribir celdas) — DOS conectores distintos. Falta alguno → ❌ Drive /
+  ❌ Sheets.
 - **Red (sesión en la nube de Claude Code, `echo $CLAUDE_CODE_REMOTE` =
-  true):** abre `https://www.facebook.com/ads/library/`,
-  `https://script.google.com` y un sitio cualquiera (p. ej.
-  `https://gumroad.com`). Bloqueado → ❌ Red.
+  true):** haz curl a `https://gumroad.com`, `https://www.google.com` y
+  `https://script.google.com`. Bloqueado (403 del proxy / "EGRESS_BLOCKED") →
+  ❌ Red. ⚠️ No pruebes con facebook.com: Facebook responde 403 a cualquier
+  script aunque la red esté en Full — es normal; la Ads Library se lee por el
+  conector de Meta.
 - **Navegador headless** para el agente VISUAL: `python3 -c "import
   playwright"` y un binario de Chromium. Falta → instálalo tú (`pip install
   playwright`; usa el Chromium preinstalado si existe, si no `playwright
@@ -113,14 +116,15 @@ solo con los ❌:
   skill" → elige el ZIP de la skill (del pack). Las skills instaladas están
   disponibles en la app de Claude Y en las sesiones en la nube de Claude Code
   de la misma cuenta.
-- ❌ Meta → claude.ai → Configuración → Conectores
-  (claude.ai/customize/connectors) → el conector de Meta Ads del directorio, o
-  "Add custom connector" con la URL de su MCP de Meta → Connect → inicia
-  sesión en Meta → aprueba.
+- ❌ Meta → claude.ai → **Personalizar → Conectores**
+  (claude.ai/customize/connectors) → **+** → **Añadir conector
+  personalizado** → Nombre: `Meta` → URL: `https://mcp.facebook.com/ads` →
+  **Añadir** → **Conectar** → inicia sesión con la cuenta de Facebook que
+  gestiona su cuenta publicitaria → aprueba TODOS los permisos → "Conectado".
 - ❌ Cuenta publicitaria → business.facebook.com → crea o reactiva una cuenta
   publicitaria (debe estar activa; normalmente pide un método de pago).
-- ❌ Drive → misma página de conectores → Google Drive (y Google Sheets si
-  aparece aparte) → Connect → su cuenta de Google → permitir.
+- ❌ Drive / ❌ Sheets → misma página de Conectores → **Google Drive** →
+  Conectar → Permitir; luego **Google Sheets** → Conectar → Permitir.
 - ❌ Red → en la barra del título de la sesión de Claude Code, menú del
   entorno → Edit → Network access → **Full** → Save.
 - ❌ Key → saca la API key del panel del proveedor → en la misma pantalla Edit

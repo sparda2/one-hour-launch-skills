@@ -8,6 +8,10 @@ This guide takes you from zero to your first offer hunt. Read it once, top to bo
 
 ## ⚡ The fast way (recommended): let the skill set itself up
 
+> ⚠️ **Run the skills in Claude Code (desktop app → Code → Cloud, or claude.ai/code), not in the regular Claude chat.** They need to open web pages and run for a long time, which only Claude Code can do.
+>
+> 📋 **Want zero surprises?** Do the 15-minute **[setup checklist](SETUP-WINNING-OFFER-SPY.md)** first: it covers the Meta ad account, the Meta connector (`https://mcp.facebook.com/ads`), Google Drive + Sheets, and full internet access, with test prompts for each. Spanish version: [`es/CONFIGURAR-WINNING-OFFER-SPY.md`](../es/CONFIGURAR-WINNING-OFFER-SPY.md).
+
 You don't need to read the rest of this guide. The Winning Offer Spy has a **guided setup** built in: it checks what's missing, tells you exactly what to click, and takes you all the way to your first hunt. **Everything is saved in your Google Drive**: your results, settings and keywords all live in one Google Sheet. No GitHub, no files on your computer.
 
 1. **Install the skill (once).** Go to **claude.ai → Settings → Capabilities → Skills → Upload skill** and choose `dist/winning-offer-spy-EN.zip` from this pack. Your skills sync to Claude Code, so it's available there too.
@@ -22,7 +26,7 @@ Claude then guides you, one step at a time:
 
 | ✅ | Step | What happens |
 |---|---|---|
-| 1 | Check | It checks the skill is installed, that the **Meta Ads** and **Google Drive** connectors are connected, and that it has internet access |
+| 1 | Check | It checks the skill is installed, that the **Meta**, **Google Drive** and **Google Sheets** connectors are connected, that you have an active Meta ad account, and that it has full internet access |
 | 2 | Fix | One short click-by-click list for anything missing |
 | 3 | One restart | Connectors only load in a new session. You open a new session and paste the one-line message it gives you |
 | 4 | Your home | It creates an **"Winning Offer Spy" folder** in your Drive with your master Google Sheet, and gives you the link |
@@ -55,7 +59,7 @@ Each step feeds the next one: **winning offer → product → funnel → ads.**
 |---|---|---|
 | A Claude plan that includes **Claude Code** (Pro or Max) | Everything | You can open Claude Code (desktop app, terminal, or claude.ai/code) |
 | A **GitHub account** with access to this pack | Installing and updating the skills | You accepted the GitHub invite you got after purchase, and you can open the pack's repository page |
-| A **Meta Ads connector** that includes the Ad Library search tool | Winning Offer Spy, Winning Ads Creator (you also need an **active Meta ad account**) | Ask Claude: *"Do you have access to ads_library_search?"* |
+| A **Meta Ads connector** that includes the Ad Library search tool | Winning Offer Spy, Winning Ads Creator (you also need an **active Meta ad account**). Add it as a custom connector with the URL `https://mcp.facebook.com/ads` | Ask Claude: *"Do you have access to ads_library_search?"* |
 | The **Google Drive** connector | Winning Offer Spy and Winning Ads Creator (each keeps its master Google Sheet in your Drive) | Ask Claude: *"Can you read my Google Sheet <link>?"* |
 | An **AI image generator** with credits (an API key is best) | Winning Ads Creator | The setup wizard tests it for you |
 

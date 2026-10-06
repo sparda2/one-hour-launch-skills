@@ -1,6 +1,7 @@
 # One Hour Launch Skills
 
 > **Students: start with [`en/START-HERE.md`](en/START-HERE.md).** Fastest path: upload `dist/winning-offer-spy-EN.zip` at claude.ai → Settings → Capabilities → Skills, open a Claude Code cloud session and say *"Set up the Winning Offer Spy for me step by step"*. All data lives in the student's Google Drive.
+> Setup checklists (Meta MCP, ad account, Drive + Sheets, full network): [`en/SETUP-WINNING-OFFER-SPY.md`](en/SETUP-WINNING-OFFER-SPY.md) · [`es/CONFIGURAR-WINNING-OFFER-SPY.md`](es/CONFIGURAR-WINNING-OFFER-SPY.md)
 
 The full launch system as Claude Code skills.
 

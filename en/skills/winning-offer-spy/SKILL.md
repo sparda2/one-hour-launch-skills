@@ -44,40 +44,65 @@ Winning Offer Spy. Once setup is complete, skip straight to STEP 0.
 - Show progress each turn as a short checklist: ✅ done, 👉 now, ⬜ next.
 - Never ask for passwords, tokens or API keys in the chat.
 
+**S0 — This MUST run in Claude Code, not in the regular Claude chat.**
+The spy has to open every competitor's landing page (mandatory
+verification), run long and save its work — only Claude Code can. Check: do
+you have a shell/Bash tool? No → you are in the regular Claude chat: STOP and
+tell them: "Open the Claude desktop app → **Code** → choose **Cloud** (or go
+to claude.ai/code), start a new session and send: *Set up the Winning Offer
+Spy for me step by step.*" Nothing else works from the regular chat.
+
 **S1 — Detect what's missing (all at once).** Search the available tools
 (including deferred tools / tool search) and test:
-- **Meta Ad Library tool** (e.g. `ads_library_search`; the name varies by
-  connector). Missing → ❌ Meta. Run one canary query ('shoes', US, active):
-  an error about the ad account → ❌ Ad account (Meta only opens the Ad Library
-  tool to people with at least one ACTIVE ad account).
-- **Google Drive tools** that can search Drive, create a Google Sheet and
-  read/write its cells. Missing → ❌ Drive.
-- **Network (only in a Claude Code cloud session, `echo $CLAUDE_CODE_REMOTE`
-  = true):** fetch `https://www.facebook.com/ads/library/` and one random
-  non-allowlisted site (e.g. `https://gumroad.com`). Blocked → ❌ Network.
-  (Competitor landings can be on any domain.)
+- **Meta Ad Library tool** (`ads_library_search`). Missing → ❌ Meta.
+  Present: run one canary query ('shoes', US, active, limit 2). It returns
+  results with an `estimated_total_count` → ✅. An error about the ad
+  account → ❌ Ad account (Meta only opens the Ad Library tool to people with
+  at least one ACTIVE ad account).
+- **Google Drive** tools (search, create files) AND **Google Sheets** tools
+  (read/write cells). They are TWO separate connectors. Either missing →
+  ❌ Drive / ❌ Sheets.
+- **Network (cloud session, `echo $CLAUDE_CODE_REMOTE` = true):** curl
+  `https://gumroad.com` and `https://www.google.com`. Both 200 → ✅. Blocked
+  (403 from the proxy / "EGRESS_BLOCKED") → ❌ Network.
+  ⚠️ Do NOT test with facebook.com: Facebook answers 403 to every script even
+  with Full network. That is normal and harmless — the Ad Library is read
+  through the Meta connector, not the network.
 - **The skill itself** is installed for next time: it shows up as an
   available skill (not only as an uploaded file in this chat). If it was only
   uploaded → ❌ Install.
 
 **S2 — Fix everything in ONE round, then ONE restart.** One numbered list
-with only the ❌ items:
-- ❌ Install → claude.ai → Settings → Capabilities → Skills → "Upload skill"
-  → choose the skill's ZIP file (from the pack). Skills uploaded there are
-  available in the Claude app AND in Claude Code cloud sessions of the same
-  account.
-- ❌ Meta → claude.ai → Settings → Connectors (claude.ai/customize/connectors)
-  → find the Meta Ads connector in the directory, or "Add custom connector"
-  with the URL of their Meta MCP server → Connect → log in to Meta → approve.
-- ❌ Ad account → business.facebook.com → create or reactivate an ad account
-  (it must be active; a payment method is usually required).
-- ❌ Drive → same page → Google Drive → Connect → choose their Google account
-  → allow access.
+with only the ❌ items, using these exact steps (tested end to end):
+- ❌ Install → claude.ai → **Settings → Capabilities → Skills** → "Upload
+  skill" → choose the skill's ZIP file (from the pack). Skills uploaded there
+  are available in the Claude app AND in Claude Code cloud sessions of the
+  same account.
+- ❌ Meta → claude.ai → **Customize → Connectors**
+  (claude.ai/customize/connectors) → **+** → **Add custom connector** →
+  Name: `Meta` → URL: `https://mcp.facebook.com/ads` → **Add** → **Connect**
+  → log in with the Facebook account that manages their Business / ad
+  account → approve ALL the permissions it asks for (ads, business, pages)
+  → it shows "Connected".
+- ❌ Ad account → business.facebook.com → Business settings → Ad accounts →
+  create or reactivate one (it must be ACTIVE; Meta usually asks for a
+  payment method). Then disconnect/reconnect the Meta connector so it sees it.
+- ❌ Drive / ❌ Sheets → same Connectors page → **Google Drive** → Connect →
+  their Google account → Allow. Then **Google Sheets** → Connect → Allow.
 - ❌ Network → in the Claude Code session title bar, open the environment
-  menu → Edit → Network access → **Full** → Save.
+  menu → **Edit** → Network access → **Full** → Save. (Applies to sessions
+  started after saving.)
 Then tell them to start a NEW session (Claude desktop app → Code → Cloud, or
-claude.ai/code) and send the resume message (S7). If nothing is ❌, skip the
-restart.
+claude.ai/code), check in that session's connector menu that Meta, Google
+Drive and Google Sheets are switched ON, and send the resume message (S7).
+Tip: pick the **Auto** permission mode for the session so the 20-40 minute
+hunt doesn't stop to ask for approvals. If nothing is ❌, skip the restart.
+
+**How they can check it themselves (give them these prompts):**
+- `Do you have access to ads_library_search?` → should say yes.
+- `Run a test search in the Ad Library: "shoes", US, active ads.` → should
+  show ads and an estimated total count.
+- `Open https://gumroad.com and tell me its title.` → should work.
 
 **S3 — Verify after the restart.** Re-run S1. Anything still ❌ → explain the
 most likely cause in one line (e.g. "the connector was added after this
