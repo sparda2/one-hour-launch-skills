@@ -11,13 +11,13 @@
       "name": "one-hour-launch",
       "source": "./en",
       "description": "Launch system in English: offer hunter, product modeling, funnel modeling and ads routine.",
-      "version": "0.2.0"
+      "version": "0.3.0"
     },
     {
       "name": "one-hour-launch-es",
       "source": "./es",
       "description": "Sistema de lanzamiento en español: cazador de ofertas, modelado de producto, modelado de funnel y rutina de ads.",
-      "version": "0.2.0"
+      "version": "0.3.0"
     }
   ]
 }

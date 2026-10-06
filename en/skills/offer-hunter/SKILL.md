@@ -1,6 +1,6 @@
 ---
 name: offer-hunter
-description: Daily hunt for scaling offers in Meta's Ad Library according to your format filter, and updates your master Excel with the history. Asks for its settings at the start (or reuses the last ones). Use when the user says 'hunt offers', 'the hunter', 'find scaling offers' or asks for the master Excel sweep.
+description: Daily hunt for scaling offers in Meta's Ad Library according to your format filter, and updates your master Google Sheet (or Excel) with the history. Asks for its settings at the start (or reuses the last ones). Use when the user says 'hunt offers', 'the hunter', 'find scaling offers' or asks for the master sheet sweep.
 ---
 
 # STEP 0 — HUNT SETTINGS (ask, never assume)
@@ -14,8 +14,10 @@ runs only point at it. Editing the routine = editing this file.
 
 | Setting | What it is | Default if the person doesn't care |
 |---|---|---|
-| WORK_FOLDER | Folder where the Excel, keyword bank and backups live | `./offer-hunter/` in the current project |
-| MASTER_EXCEL | The single master file (ALWAYS the same file) | `offers-master.xlsx` |
+| WORK_FOLDER | Folder where the keyword bank and local files live | `./offer-hunter/` in the current project |
+| OUTPUT | Where findings are logged: `google-sheet` (needs the Google Drive connector) or `excel` (local file, Python + openpyxl) | `google-sheet` |
+| MASTER_SHEET | URL of the master Google Sheet (ALWAYS the same one). Only for OUTPUT = google-sheet | If none: create "Offer Hunter — Master" in the person's Drive on the first run and save its URL |
+| MASTER_EXCEL | The master Excel file (ALWAYS the same file). Only for OUTPUT = excel | `WORK_FOLDER/offers-master.xlsx` |
 | YOUR_FILTER | The product format the person can replicate. Only what passes it gets logged. E.g. "low-ticket downloadable digital toolkits (PDF guides, templates, prompt packs) I can produce with AI in days; no video courses, coaching or services" | **None — must be asked** |
 | NICHE_CIRCLES | Circle 1 = current niches; 2 = same buyer, other topics; 3 = adjacent. 3-5 each. The hunt goes in that order | **None — must be asked** |
 | OWN_PAGES | The person's own Facebook pages (names or page_ids), EXCLUDED from the hunt | Ask; "none" only if the person says so |
@@ -69,15 +71,22 @@ it to `my-rules.md` (create the file if needed).
    keywords by niche circle × LANGUAGES, consumer AND professional angles,
    DOCUMENT keywords for B2B: checklist, template, protocol, worksheet),
    save it, and tell the person in one line where it is.
-6. **Master Excel:** if it doesn't exist, create it with the 4 sheets
-   described below ("Offers", "Pending", "History", "Search Log"). After that,
-   NEVER create another one.
+6. **Master sheet:** check the tools BEFORE hunting. For `google-sheet`, the
+   Google Drive connector must be able to read AND write the sheet — if it
+   can't, STOP and say exactly what to connect (don't hunt and then lose the
+   results). If MASTER_SHEET is empty, create it with the 4 tabs described
+   below ("Offers", "Pending", "History", "Search Log"), save its URL to the
+   profile, and give the person the link. After that, NEVER create another one.
+   For `excel`, same with MASTER_EXCEL.
+7. **Meta tools:** confirm the Meta connector exposes an Ad Library search
+   tool (usually `ads_library_search`; the name can vary by connector). If
+   there is none, STOP and say so — never fall back to inventing counts.
 
 # THE ROUTINE
 
 You are the "Scaling Offer Hunter". Run the full daily routine from
 WORK_FOLDER. Goal: find offers that ARE scaling right now, verify them and
-log them in the MASTER_EXCEL with their history.
+log them in the master sheet (MASTER_SHEET or MASTER_EXCEL) with their history.
 
 ## Hard criteria (if ONE fails, discard)
 
@@ -100,7 +109,7 @@ different ads (they are variants of ONE ad).
 
 ## Multi-angle search (every run)
 
-1. First re-check the offers ALREADY logged in the Excel (update counts).
+1. First re-check the offers ALREADY logged in the master sheet (update counts).
 2. Hot veins from the Search Log (what worked yesterday gets deepened today).
 3. New keywords from the KEYWORD_BANK applying: consumer angle AND professional
    angle of each topic, DOCUMENT keywords for B2B (checklist, template,
@@ -121,17 +130,32 @@ doesn't fit, log the GAP in Pending as an idea for your own product.
 Each finding closes with one line: "the product I would make from this"
 (which product, for which buyer, in which language).
 
-## Update the Excel (Python + openpyxl)
+## Update the master sheet
 
-- ALWAYS the same MASTER_EXCEL. NEVER create a new Excel. Flow: backup to
-  *-backup.xlsx → load_workbook → update/append IN PLACE.
+- ALWAYS the same master. NEVER create a second one. Read ALL tabs first, then
+  update/append IN PLACE.
+- **Google Sheet (default):** write through the Google Drive connector.
+  Google Sheets keeps its own version history, so before writing, add the
+  run's start time to the Search Log (the restore point if a run breaks
+  something: File → Version history). If a write fails mid-run, save the
+  day's results to `WORK_FOLDER/pending-sync-<DATE>.csv`, report it, and
+  sync them on the next run — never lose findings.
+- **Excel:** Python + openpyxl. Backup to `*-backup.xlsx` → load_workbook →
+  update/append IN PLACE.
 - DEDUPLICATE by page ID: if the offer already exists → update it (move
   TODAY's count to YESTERDAY, recompute the Trend 📈/➡️/📉/❌, add a row to
   History). If it's new → add it with a sequential ID.
-- Sheets: "Offers" (the verified ones), "Pending" (promising without a count
-  or under threshold + 💡 gaps), "History" (date | ID | product | ads today),
-  "Search Log" (date | keywords used | useful results).
-- Keep the formatting: colored headers, filters, links as hyperlinks.
+- Tabs and columns:
+  - "Offers" (the verified ones): ID | Page ID | Advertiser | Product |
+    Vertical | Language | Country | Ads today | Ads yesterday | Trend | Days
+    running | Library link | Landing link | Format | The product I would make |
+    First seen | Last checked
+  - "Pending" (promising without a count or under threshold + 💡 gaps): same
+    columns + Reason
+  - "History": date | ID | product | ads today
+  - "Search Log": date | keywords used | useful results
+- Keep the formatting: bold colored header row, frozen header, filters on,
+  links as clickable hyperlinks (`=HYPERLINK(url, label)` in Sheets).
 
 ## Final summary (print it clearly)
 

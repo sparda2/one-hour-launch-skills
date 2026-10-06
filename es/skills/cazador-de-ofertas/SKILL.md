@@ -1,6 +1,6 @@
 ---
 name: cazador-de-ofertas
-description: Caza diaria de ofertas escalando en la biblioteca de anuncios de Meta según tu filtro de formato, y actualiza tu Excel maestro con el histórico. Pide sus ajustes al inicio (o reutiliza los últimos). Usar cuando el usuario diga 'cazar ofertas', 'el cazador', 'buscar ofertas escalando' o pida el barrido del Excel maestro.
+description: Caza diaria de ofertas escalando en la biblioteca de anuncios de Meta según tu filtro de formato, y actualiza tu Google Sheet maestro (o Excel) con el histórico. Pide sus ajustes al inicio (o reutiliza los últimos). Usar cuando el usuario diga 'cazar ofertas', 'el cazador', 'buscar ofertas escalando' o pida el barrido de la hoja maestra.
 ---
 
 # PASO 0 — AJUSTES DE LA CAZA (pregunta, jamás asumas)
@@ -15,8 +15,10 @@ editar este archivo.
 
 | Ajuste | Qué es | Por defecto si a la persona le da igual |
 |---|---|---|
-| CARPETA_TRABAJO | Carpeta donde viven el Excel, el banco de keywords y los backups | `./cazador-de-ofertas/` en el proyecto actual |
-| EXCEL_MAESTRO | El archivo maestro único (SIEMPRE el mismo) | `ofertas-master.xlsx` |
+| CARPETA_TRABAJO | Carpeta donde viven el banco de keywords y los archivos locales | `./cazador-de-ofertas/` en el proyecto actual |
+| SALIDA | Dónde se registran los hallazgos: `google-sheet` (necesita el conector de Google Drive) o `excel` (archivo local, Python + openpyxl) | `google-sheet` |
+| SHEET_MAESTRO | URL del Google Sheet maestro (SIEMPRE el mismo). Solo si SALIDA = google-sheet | Si no hay: crear "Cazador de ofertas — Maestro" en el Drive de la persona en la primera corrida y guardar su URL |
+| EXCEL_MAESTRO | El Excel maestro (SIEMPRE el mismo archivo). Solo si SALIDA = excel | `CARPETA_TRABAJO/ofertas-master.xlsx` |
 | TU_FILTRO | El formato de producto que la persona puede replicar. Solo se registra lo que lo pase. P. ej. "toolkits digitales descargables de ticket bajo (guías PDF, plantillas, packs de prompts) que pueda producir con IA en días; nada de cursos en video, coaching ni servicios" | **Ninguno — hay que preguntarlo** |
 | NICHOS_CIRCULOS | Círculo 1 = nichos actuales; 2 = mismo comprador, otros temas; 3 = adyacentes. 3-5 por círculo. La caza va en ese orden | **Ninguno — hay que preguntarlo** |
 | PAGINAS_PROPIAS | Las páginas de Facebook de la persona (nombres o page_id), EXCLUIDAS de la caza | Preguntar; "ninguna" solo si la persona lo dice |
@@ -72,15 +74,23 @@ añadirla a `my-rules.md` (créalo si no existe).
    keywords por círculo de nicho × IDIOMAS, ángulos consumidor Y profesional,
    keywords de DOCUMENTO para B2B: checklist, plantilla, protocolo, ficha),
    guárdalo y di en una línea dónde está.
-6. **Excel maestro:** si no existe, créalo con las 4 hojas descritas abajo
-   ("Ofertas", "Pendientes", "Histórico", "Log de búsquedas"). A partir de ahí,
-   NUNCA crees otro.
+6. **Hoja maestra:** comprueba las herramientas ANTES de cazar. Con
+   `google-sheet`, el conector de Google Drive debe poder leer Y escribir la
+   hoja — si no puede, PARA y di exactamente qué conectar (no caces para luego
+   perder los resultados). Si SHEET_MAESTRO está vacío, créalo con las 4
+   pestañas descritas abajo ("Ofertas", "Pendientes", "Histórico", "Log de
+   búsquedas"), guarda su URL en el perfil y dale el link a la persona. A
+   partir de ahí, NUNCA crees otro. Con `excel`, lo mismo con EXCEL_MAESTRO.
+7. **Herramientas de Meta:** confirma que el conector de Meta expone una tool
+   de búsqueda en la Ads Library (normalmente `ads_library_search`; el nombre
+   puede variar según el conector). Si no hay ninguna, PARA y dilo — jamás
+   inventes conteos.
 
 # LA RUTINA
 
 Eres el "Cazador de ofertas escalando". Ejecuta la rutina diaria completa desde
 CARPETA_TRABAJO. Objetivo: encontrar ofertas que ESTÁN escalando ahora mismo,
-verificarlas y registrarlas en el EXCEL_MAESTRO con su histórico.
+verificarlas y registrarlas en la hoja maestra (SHEET_MAESTRO o EXCEL_MAESTRO) con su histórico.
 
 ## Criterios duros (si falla UNO, se descarta)
 
@@ -103,7 +113,7 @@ keyword NO son N anuncios distintos (son variantes de UN anuncio).
 
 ## Búsqueda multi-ángulo (cada corrida)
 
-1. Re-chequear primero las ofertas YA registradas en el Excel (actualizar conteos).
+1. Re-chequear primero las ofertas YA registradas en la hoja maestra (actualizar conteos).
 2. Venas calientes del Log de búsquedas (lo que funcionó ayer se profundiza hoy).
 3. Keywords nuevas del BANCO_KEYWORDS aplicando: ángulo consumidor Y ángulo
    profesional de cada tema, keyword de DOCUMENTO para B2B (checklist, template,
@@ -124,17 +134,34 @@ sirve, anota el HUECO en Pendientes como idea de producto propio.
 Cada hallazgo cierra con una línea: "el producto que YO haría con esto"
 (qué producto, para qué comprador, en qué idioma).
 
-## Actualizar el Excel (Python + openpyxl)
+## Actualizar la hoja maestra
 
-- SIEMPRE el mismo EXCEL_MAESTRO. NUNCA crees un Excel nuevo. Flujo: backup a
-  *-backup.xlsx → load_workbook → actualizar/añadir EN SU LUGAR.
+- SIEMPRE la misma hoja maestra. NUNCA crees una segunda. Lee TODAS las
+  pestañas primero y luego actualiza/añade EN SU LUGAR.
+- **Google Sheet (por defecto):** escribe con el conector de Google Drive.
+  Google Sheets guarda su propio historial de versiones: antes de escribir,
+  anota la hora de inicio de la corrida en el Log de búsquedas (es el punto de
+  restauración si una corrida rompe algo: Archivo → Historial de versiones).
+  Si una escritura falla a mitad, guarda los resultados del día en
+  `CARPETA_TRABAJO/pendiente-sync-<FECHA>.csv`, repórtalo y sincronízalos en
+  la siguiente corrida — jamás se pierden hallazgos.
+- **Excel:** Python + openpyxl. Backup a `*-backup.xlsx` → load_workbook →
+  actualizar/añadir EN SU LUGAR.
 - ANTIDUPLICADOS por ID de página: si la oferta ya existe → actualízala (mueve
   el conteo de HOY a AYER, recalcula la Tendencia 📈/➡️/📉/❌, añade fila al
   Histórico). Si es nueva → añádela con ID correlativo.
-- Hojas: "Ofertas" (las verificadas), "Pendientes" (prometedoras sin conteo o
-  bajo umbral + huecos 💡), "Histórico" (fecha | ID | producto | ads de hoy),
-  "Log de búsquedas" (fecha | keywords usadas | resultados útiles).
-- Mantén el formato: encabezados con color, filtros, links como hipervínculos.
+- Pestañas y columnas:
+  - "Ofertas" (las verificadas): ID | Page ID | Anunciante | Producto |
+    Vertical | Idioma | País | Ads hoy | Ads ayer | Tendencia | Días
+    corriendo | Link biblioteca | Link landing | Formato | El producto que YO
+    haría | Primera vez visto | Último chequeo
+  - "Pendientes" (prometedoras sin conteo o bajo umbral + huecos 💡): mismas
+    columnas + Motivo
+  - "Histórico": fecha | ID | producto | ads de hoy
+  - "Log de búsquedas": fecha | keywords usadas | resultados útiles
+- Mantén el formato: encabezado en negrita con color, encabezado fijo,
+  filtros activos, links como hipervínculos clicables (`=HYPERLINK(url;
+  texto)` en Sheets).
 
 ## Resumen final (imprímelo claro)
 

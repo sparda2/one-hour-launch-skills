@@ -4,13 +4,13 @@ Skill: `/offer-hunter` · Suggested schedule: daily, 8:00 AM · Your market rada
 
 ## 1. What it is and what you need
 
-Every morning the hunter sweeps Meta's Ad Library looking for offers that ARE scaling (advertisers with many active ads for the same product, running for several days) and logs them in a master Excel with their history and trend. It's the first routine of the day because it feeds all the others: it produces product ideas with proven demand and tested sales angles.
+Every morning the hunter sweeps Meta's Ad Library looking for offers that ARE scaling (advertisers with many active ads for the same product, running for several days) and logs them in a master Google Sheet (or Excel) with their history and trend. It's the first routine of the day because it feeds all the others: it produces product ideas with proven demand and tested sales angles.
 
 | Requirement | What it's used for | How to know you have it |
 |---|---|---|
 | Meta Ads connector in Claude Code | API search of the Ad Library (`ads_library_search`) — the cheap, block-free way | Ask Claude: "do you have access to ads_library_search?" |
-| (Optional) a synced folder: Google Drive for desktop, or a GitHub repo on the web | Your Excel gets backed up automatically | Your work folder is inside it |
-| Python with openpyxl | Read and update the master Excel without breaking it | Claude installs it if missing — do nothing |
+| Google Drive connector | Read and write your master Google Sheet | Ask Claude: "can you create a Google Sheet in my Drive?" |
+| (Only if you choose Excel output) Python with openpyxl | Read and update a local Excel without breaking it | Claude installs it if missing — do nothing |
 
 ## 2. Installation and settings
 
@@ -24,7 +24,8 @@ Install the pack by following **START-HERE.md**. There's no config file to fill 
 | Languages | Where to hunt | All languages, English first (default) |
 | Min ads | The "is scaling" threshold | 15 (default). If your niche is small, drop to 10, but note that you lowered the bar |
 | Daily floor | Minimum new verified findings per run | 5 (default). The summary must be honest if it isn't reached. Never pad with mediocre ones |
-| Work folder / Excel | Where everything lives | `./offer-hunter/offers-master.xlsx` (default). Created on the first run, together with a 100+ keyword bank |
+| Output / master sheet | Where the offers are logged | A Google Sheet (default): paste its link, or the hunter creates one in your Drive on the first run. Excel is optional |
+| Work folder | Where the keyword bank lives | `./offer-hunter/` (default). A 100+ keyword bank is created on the first run |
 
 On later runs it shows your saved settings and asks: *"Hunt with these, change some, or start fresh?"* For a one-off change, put it in the command: `/offer-hunter min ads 10`.
 
@@ -33,11 +34,11 @@ On later runs it shows your saved settings and asks: *"Hunt with these, change s
 ## 3. First run (on demand, with you watching)
 
 1. Type `/offer-hunter` in Claude Code and answer its questions. The run takes 20-40 minutes.
-2. At the end you should have: the summary in the chat (new / increased / shut off / top 3) and the Excel with its 4 sheets populated.
+2. At the end you should have: the summary in the chat (new / increased / shut off / top 3) and the master sheet with its 4 tabs populated.
 3. Validate 2-3 findings by hand: open each one's library link (does it really have that many active ads?) and its landing (is it really a downloadable digital product with direct checkout?).
 4. If it brought you things you couldn't replicate: the problem is your filter. Tighten it (*"change some"*) and run again. The hunter's quality IS your filter's quality.
 
-> **What to expect the first days.** For the first 2-3 days the hunter explores and burns the obvious keywords; the Excel grows fast. Then it stabilizes: few new ones per day, but the HISTORY starts to be worth gold — seeing an offer go from 20 to 70 ads in a week is the strongest buy signal there is.
+> **What to expect the first days.** For the first 2-3 days the hunter explores and burns the obvious keywords; the sheet grows fast. Then it stabilizes: few new ones per day, but the HISTORY starts to be worth gold — seeing an offer go from 20 to 70 ads in a week is the strongest buy signal there is.
 
 ## 4. Scheduling it (once it went well 2-3 times)
 
@@ -59,7 +60,7 @@ Context: you are the daily scheduled run at 8:00 AM.
 - **Every morning (2 min):** read the summary. What matters: the ones that INCREASED (deltas like 40→70) and the top 3.
 - **When an offer rises strongly several days in a row:** it's a candidate to clone IN YOUR FORMAT — move it to your list of products to make (the hunter closes each finding with "the product I would make").
 - **Once a week (10 min):** prune the Pending sheet (what never took off, out) and review the Log to see which keywords are already burned.
-- Don't edit the Excel by hand while the routine is running — there's an automatic backup, but better not to cross paths.
+- Don't edit the sheet by hand while the routine is running. Google Sheets keeps version history, but it's better not to cross paths.
 - Feed the keyword bank when you discover a new angle (a profession, a language, a format).
 - Got a lesson of your own? Say "add to my rules: …". It's saved in `my-rules.md`, which every run reads automatically.
 
@@ -69,9 +70,9 @@ Context: you are the daily scheduled run at 8:00 AM.
 |---|---|---|
 | The library returns 0 on every search | Rate-limit from many consecutive queries | Cool down 3-5 minutes and continue. It's NOT your session: don't log out |
 | Brings findings you can't replicate | Your filter is loose | Tighten it with *"change some"* and tell Claude to re-evaluate the latest findings against the new filter |
-| Your own page shows up as competition | Missing from your own pages | Run with *"change some"*, add its page_id, and delete the row from the Excel |
+| Your own page shows up as competition | Missing from your own pages | Run with *"change some"*, add its page_id, and delete the row from the sheet |
 | Counts that don't match what you see | You're reading "N ads use this creative" (variants of ONE ad) | The real count is the advertiser PAGE total (`view_all_page_id`) |
-| Broken Excel or duplicate rows | Run interrupted mid-write | Restore the `*-backup.xlsx` (created before every run) and relaunch |
+| Broken sheet or duplicate rows | Run interrupted mid-write | Google Sheets: File → Version history, restore the version from before the run (its start time is in the Search Log). Excel: restore `*-backup.xlsx` |
 
 ## 7. Checklist for this skill
 
