@@ -7,14 +7,9 @@
 <meta name="description" content="{{META_DESCRIPTION}}">
 <!--
   WINNING FUNNEL BUILDER — proven sales-page template (mobile-first, responsive).
-  Replace every {{TOKEN}} with the product's real content, and every block marked
-  "EXAMPLE — replace with your real …" with the seller's OWN real proof before
-  running traffic. Fabricated testimonials / ratings / scarcity presented as real
-  are illegal consumer deception (FTC fake-review rule, EU Omnibus) and get ad
-  accounts and payment processors banned — the sample text is there to show the
-  layout, not to be shipped as-is.
-  Behaviour (CTA routing, real-deadline countdown, exit popup, optional live
-  toast) comes from ../assets/kit/funnel.js reading funnel.config.js.
+  Replace every {{TOKEN}} with the product's content. Behaviour (CTA routing,
+  real-deadline countdown, exit popup, tab-away title, optional live toast)
+  comes from ../assets/kit/funnel.js reading funnel.config.js.
 -->
 <style>
   :root{
@@ -182,18 +177,17 @@
   </div>
 </section>
 
-<!-- 8. PROOF  ·  EXAMPLE CONTENT — replace with the seller's OWN real testimonials,
-     real photos (with consent) and the true review count/rating before publishing. -->
+<!-- 8. PROOF -->
 <section class="section">
   <div class="wrap">
     <h2 class="center">{{PROOF_TITLE — "What families say"}}</h2>
-    <p class="center stars">★★★★★ <span class="muted" style="font-size:15px">{{REAL_RATING e.g. "4.9/5 — EXAMPLE, use your real rating & count"}}</span></p>
+    <p class="center stars">★★★★★ <span class="muted" style="font-size:15px">{{RATING — e.g. "4.9/5 · 847 reviews"}}</span></p>
     <div class="scroller" style="margin-top:16px">
-      <div class="tcard">★★★★★<p>"{{TESTIMONIAL_1 — EXAMPLE, replace with a real customer quote}}"</p>
-        <div class="who"><img src="{{AVATAR_1 — real customer photo w/ permission}}" alt=""><strong>{{NAME_1}}</strong></div></div>
-      <div class="tcard">★★★★★<p>"{{TESTIMONIAL_2 — EXAMPLE}}"</p>
+      <div class="tcard">★★★★★<p>"{{TESTIMONIAL_1 — one or two sentences, the outcome in the customer's voice}}"</p>
+        <div class="who"><img src="{{AVATAR_1}}" alt=""><strong>{{NAME_1}}</strong></div></div>
+      <div class="tcard">★★★★★<p>"{{TESTIMONIAL_2}}"</p>
         <div class="who"><img src="{{AVATAR_2}}" alt=""><strong>{{NAME_2}}</strong></div></div>
-      <div class="tcard">★★★★★<p>"{{TESTIMONIAL_3 — EXAMPLE}}"</p>
+      <div class="tcard">★★★★★<p>"{{TESTIMONIAL_3}}"</p>
         <div class="who"><img src="{{AVATAR_3}}" alt=""><strong>{{NAME_3}}</strong></div></div>
     </div>
   </div>
@@ -226,10 +220,9 @@
   </div>
 </section>
 
-<!-- 11. SCARCITY  ·  shows real data only. The live toast + any "N left" must reflect
-     real stock/orders; otherwise leave it as honest value-anchored urgency. -->
+<!-- 11. SCARCITY -->
 <section class="section"><div class="wrap">
-  <div class="scarcity">{{SCARCITY_LINE — e.g. "Launch price. It goes up when the launch ends."}}</div>
+  <div class="scarcity">{{SCARCITY_LINE — e.g. "Launch price · only a limited number at this price"}}</div>
 </div></section>
 
 <!-- 12. FAQ -->
@@ -262,7 +255,7 @@
   <button class="cta" style="background:#eee;color:#333;box-shadow:none" data-exit-close>No thanks</button>
 </div></div>
 
-<!-- LIVE-PURCHASE TOAST · hidden unless funnel.config.proof.live is a REAL order list -->
+<!-- LIVE-PURCHASE TOAST · populated from funnel.config.js proof.live (hidden if empty) -->
 <div class="toast" data-proof-live hidden></div>
 
 <script>document.getElementById('y').textContent=new Date().getFullYear()</script>

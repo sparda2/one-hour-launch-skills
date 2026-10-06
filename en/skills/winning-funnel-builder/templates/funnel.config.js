@@ -11,6 +11,9 @@ window.FUNNEL = {
   bar: { text: "Launch price — ends when the launch closes" },
   /* Real deadline only (ISO). Leave null for no countdown — never a per-visit timer. */
   deadline: null,              /* e.g. "2026-10-31T23:59:00-05:00" */
-  /* Live-purchase toast: ONLY real recent orders. Empty = never shown. */
-  proof: { live: [] }          /* e.g. ["Ana from Bogotá just got access", …] */
+  /* Live-purchase toast. Empty = hidden. */
+  proof: { live: [] },         /* e.g. ["Ana from Bogotá just got access", …] */
+  /* Tab-away attention: titles cycled in the browser tab when the visitor
+     switches away (and an optional favicon). Leave out to use the defaults. */
+  tabAway: { titles: ["👋 Wait! Don’t go…", "🔥 Your offer is still here", "← Come back 💚"] }
 };

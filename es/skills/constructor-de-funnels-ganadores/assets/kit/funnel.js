@@ -92,4 +92,29 @@
     }
     setTimeout(next, 8000);
   })();
+
+  /* 7. Tab-away attention: when the visitor switches to another tab, swap the
+        page <title> (and favicon, if configured) to pull them back; restore on
+        return. Config: C.tabAway = { titles:[...], favicon:"url" }. Sensible
+        defaults so it works with no config. */
+  (function () {
+    var cfg = C.tabAway || {};
+    var msgs = (cfg.titles && cfg.titles.length) ? cfg.titles
+      : ['\u{1F44B} Wait! Don’t go…', '\u{1F525} Your offer is still here', '← Come back 💚'];
+    var realTitle = document.title, realIcon = null, link = document.querySelector('link[rel~="icon"]');
+    if (link) realIcon = link.getAttribute('href');
+    var timer = null, i = 0;
+    function setIcon(href) { if (link && href != null) link.setAttribute('href', href); }
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) {
+        if (cfg.favicon) setIcon(cfg.favicon);
+        i = 0;
+        timer = setInterval(function () { document.title = msgs[i++ % msgs.length]; }, 1200);
+        document.title = msgs[0];
+      } else {
+        if (timer) { clearInterval(timer); timer = null; }
+        document.title = realTitle; setIcon(realIcon);
+      }
+    });
+  })();
 })();

@@ -146,7 +146,7 @@ funnel esté construido y publicado (o entregado como archivos).
 | SCOPE | Solo la página de ventas, o todo el funnel (upsells/downsells/gracias) | Todo el funnel |
 | PROOF | Testimonios / ratings / números reales que el usuario pueda aportar | Preguntar; placeholders si no hay |
 | STYLE_REFS | Páginas cuya estructura/look modelar | `references/page-structure.md` + cualquier URL que el usuario añada |
-| PUBLISH_TARGET | github-pages / vercel / gohighlevel / solo-archivos | Preguntar |
+| PUBLISH_TARGET | gohighlevel (por defecto) / github-pages / vercel / solo-archivos | gohighlevel |
 | IMAGE_ENGINE | Generador + cómo llamarlo | Preguntar; placeholders si no hay |
 | OWN_PAGES | Las páginas de Meta del usuario (excluir del research de anuncios) | De la hoja de Winning Offer Spy si existe |
 

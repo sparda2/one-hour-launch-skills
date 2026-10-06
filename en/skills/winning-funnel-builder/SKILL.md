@@ -139,7 +139,7 @@ project. Mark `Setup = complete` when the first funnel is built and published
 | SCOPE | Just the sales page, or the whole funnel (upsells/downsells/thank-you) | Whole funnel |
 | PROOF | Real testimonials / ratings / numbers the user can provide | Ask; placeholders if none |
 | STYLE_REFS | Pages whose structure/look to model (defaults below) | `references/page-structure.md` + any URL the user adds |
-| PUBLISH_TARGET | github-pages / vercel / gohighlevel / files-only | Ask |
+| PUBLISH_TARGET | gohighlevel (default) / github-pages / vercel / files-only | gohighlevel |
 | IMAGE_ENGINE | Generator + how to call it | Ask; placeholders if none |
 | OWN_PAGES | The user's own Meta pages (exclude from ad research) | From Winning Offer Spy sheet if present |
 
