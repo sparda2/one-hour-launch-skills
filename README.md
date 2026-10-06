@@ -1,4 +1,4 @@
-# launch-skills
+# One Hour Launch Skills
 
 The full launch system as Claude Code skills, in **Spanish (`es/`)** and **English (`en/`)**:
 
@@ -32,20 +32,20 @@ Every skill exists in both languages with the same rules. Skill names differ per
 In Claude Code (local, cloud session, or a Grok Bot cloud computer with Claude Code installed):
 
 ```
-/plugin marketplace add sparda2/launch-skills
-/plugin install launch-engine-en@launch-skills    # or launch-engine-es
+/plugin marketplace add sparda2/one-hour-launch-skills
+/plugin install launch-engine-en@one-hour-launch-skills    # or launch-engine-es
 ```
 
-Update later with `/plugin marketplace update launch-skills`.
+Update later with `/plugin marketplace update one-hour-launch-skills`.
 
 To auto-enable in a workspace repo (so every cloud session opening it has the skills), add to that repo's `.claude/settings.json`:
 
 ```json
 {
   "extraKnownMarketplaces": {
-    "launch-skills": { "source": { "source": "github", "repo": "sparda2/launch-skills" } }
+    "one-hour-launch-skills": { "source": { "source": "github", "repo": "sparda2/one-hour-launch-skills" } }
   },
-  "enabledPlugins": { "launch-engine-es@launch-skills": true }
+  "enabledPlugins": { "launch-engine-es@one-hour-launch-skills": true }
 }
 ```
 
