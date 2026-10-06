@@ -217,7 +217,16 @@ con el que la página debe coincidir.
    ganador del anuncio sobre el orden de secciones probado. Opciones de titular
    (3), el ángulo de cada sección, el stack de oferta, la garantía real, las
    objeciones del FAQ.
-3. **Construye las páginas** como HTML estático autocontenido, mobile-first,
+3. **Parte de `templates/sales-page.html` + `templates/funnel.config.js`**
+   (la estructura probada, responsive en móvil, con cada sección y cada
+   componente de prueba/urgencia ya construido y con estilo, relleno con
+   contenido de muestra marcado `EJEMPLO — reemplaza con tu prueba real`).
+   Reemplaza cada `{{TOKEN}}` con el contenido real del producto; escribe copy
+   de muestra persuasivo por sección modelado sobre la referencia; mantén los
+   marcadores EJEMPLO en los bloques de prueba para que el vendedor ponga sus
+   propios testimonios, fotos, rating y escasez reales (ver
+   `references/page-structure.md` → prueba y urgencia).
+   **Construye las páginas** como HTML estático autocontenido, mobile-first,
    de carga rápida (CSS inline, stack de fuentes del sistema o una web font,
    sin frameworks pesados; lazy-load de imágenes; un poco de JS solo para los
    componentes honestos — FAQ acordeón, barra sticky, un countdown de deadline

@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{PRODUCT_NAME}} — {{ONE_LINE_PROMISE}}</title>
+<meta name="description" content="{{META_DESCRIPTION}}">
+<!--
+  CONSTRUCTOR DE FUNNELS GANADORES — plantilla de página de ventas probada (mobile-first, responsive).
+  Reemplaza cada {{TOKEN}} con el contenido real del producto, y cada bloque marcado
+  "EJEMPLO — reemplaza con tu prueba real" con la prueba REAL del vendedor antes de
+  meter tráfico. Los testimonios / ratings / escasez inventados y presentados como
+  reales son engaño al consumidor y es ilegal (regla de reseñas falsas de la FTC,
+  Omnibus de la UE) y hace que baneen cuentas de anuncios y procesadores de pago —
+  el texto de muestra está para mostrar el layout, no para publicarse tal cual.
+  El comportamiento (ruteo de CTA, countdown de deadline real, popup de salida, toast
+  en vivo opcional) viene de ../assets/kit/funnel.js leyendo funnel.config.js.
+-->
+<style>
+  :root{
+    --bg:#ffffff; --fg:#141a1f; --muted:#5b6b78; --line:#e6ebef;
+    --brand:#1f8f5f; --brand-ink:#0d5436; --accent:#ff7a1a; --card:#f7faf9;
+    --maxw:720px; --radius:16px; --shadow:0 6px 24px rgba(16,40,30,.08);
+  }
+  :root:not([data-theme="light"]){} /* brand palette is light by design for conversion */
+  *{box-sizing:border-box} html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--fg);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55;font-size:17px}
+  img{max-width:100%;height:auto;display:block;border-radius:12px}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 16px}
+  .section{padding:40px 0}
+  h1,h2,h3{line-height:1.2;margin:0 0 .5em;font-weight:800;letter-spacing:-.02em}
+  h1{font-size:clamp(28px,7vw,44px)} h2{font-size:clamp(23px,5.2vw,34px)}
+  h3{font-size:clamp(19px,4vw,22px)}
+  p{margin:0 0 1em} .muted{color:var(--muted)}
+  .center{text-align:center}
+  .eyebrow{display:inline-block;font-weight:700;color:var(--brand-ink);
+    background:var(--card);border:1px solid var(--line);padding:6px 14px;border-radius:999px;
+    font-size:14px;margin-bottom:14px}
+  /* CTA */
+  .cta{display:block;width:100%;max-width:520px;margin:18px auto;padding:18px 22px;
+    background:var(--brand);color:#fff;border:0;border-radius:14px;text-align:center;
+    font-size:clamp(17px,4.4vw,20px);font-weight:800;text-decoration:none;cursor:pointer;
+    box-shadow:var(--shadow);transition:transform .08s ease,filter .2s}
+  .cta:hover{filter:brightness(1.05)} .cta:active{transform:translateY(1px)}
+  .cta small{display:block;font-weight:600;opacity:.9;font-size:13px;margin-top:4px}
+  .trust{display:flex;flex-wrap:wrap;gap:10px 18px;justify-content:center;
+    color:var(--muted);font-size:14px;font-weight:600;margin:8px 0}
+  .trust span{white-space:nowrap}
+  /* sticky announcement bar */
+  .bar{position:sticky;top:0;z-index:40;background:var(--brand-ink);color:#fff;
+    text-align:center;font-weight:700;font-size:14px;padding:10px 14px}
+  .bar [data-countdown]{font-variant-numeric:tabular-nums;background:rgba(255,255,255,.15);
+    padding:2px 8px;border-radius:8px;margin-left:6px}
+  /* cards / grids */
+  .grid{display:grid;gap:16px}
+  @media(min-width:640px){.grid.cols-2{grid-template-columns:1fr 1fr}
+    .grid.cols-3{grid-template-columns:repeat(3,1fr)}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+  .step{counter-increment:step} .step .n{display:inline-grid;place-items:center;width:34px;height:34px;
+    border-radius:50%;background:var(--brand);color:#fff;font-weight:800;margin-bottom:10px}
+  ul.checks{list-style:none;padding:0;margin:0} ul.checks li{padding:8px 0 8px 30px;position:relative}
+  ul.checks li::before{content:"✓";position:absolute;left:0;color:var(--brand);font-weight:800}
+  ul.pains li::before{content:"✕";color:#c2443a}
+  /* two columns who-for */
+  .cols-for{display:grid;gap:16px}@media(min-width:640px){.cols-for{grid-template-columns:1fr 1fr}}
+  /* testimonials */
+  .tcard{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+  .tcard .who{display:flex;align-items:center;gap:12px;margin-top:12px}
+  .tcard .who img{width:46px;height:46px;border-radius:50%}
+  .stars{color:#ffb300;letter-spacing:2px;font-size:18px}
+  .scroller{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;
+    padding-bottom:8px;-webkit-overflow-scrolling:touch}
+  .scroller>*{flex:0 0 86%;scroll-snap-align:center}@media(min-width:640px){.scroller>*{flex-basis:48%}}
+  /* offer box */
+  .offer{background:linear-gradient(180deg,#fff, var(--card));border:2px solid var(--brand);
+    border-radius:20px;padding:24px;box-shadow:var(--shadow)}
+  .price{font-size:clamp(40px,11vw,60px);font-weight:900;color:var(--brand-ink);line-height:1}
+  .price .old{display:block;font-size:20px;color:var(--muted);text-decoration:line-through;font-weight:700}
+  .stack{list-style:none;padding:0;margin:16px 0}
+  .stack li{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line)}
+  .stack .v{color:var(--muted);white-space:nowrap}
+  /* guarantee */
+  .guarantee{display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:center;text-align:center}
+  @media(min-width:640px){.guarantee{text-align:left;flex-wrap:nowrap}}
+  .guarantee img{width:120px}
+  /* scarcity bar */
+  .scarcity{background:#fff6ec;border:1px solid #ffd9b0;border-radius:14px;padding:14px 16px;text-align:center;font-weight:700}
+  /* faq */
+  details{border:1px solid var(--line);border-radius:12px;margin:10px 0;background:#fff}
+  details summary{cursor:pointer;padding:16px;font-weight:700;list-style:none;position:relative}
+  details summary::-webkit-details-marker{display:none}
+  details summary::after{content:"+";position:absolute;right:16px;color:var(--brand);font-weight:800}
+  details[open] summary::after{content:"–"}
+  details .a{padding:0 16px 16px;color:var(--muted)}
+  /* exit popup + live toast */
+  .popup{position:fixed;inset:0;z-index:60;background:rgba(10,20,16,.6);
+    display:flex;align-items:center;justify-content:center;padding:18px}
+  .popup[hidden]{display:none} .popup .box{background:#fff;border-radius:18px;max-width:420px;padding:26px;text-align:center}
+  .toast{position:fixed;left:16px;bottom:16px;z-index:55;background:#fff;border:1px solid var(--line);
+    box-shadow:var(--shadow);border-radius:12px;padding:12px 14px;font-size:14px;max-width:300px}
+  .toast[hidden]{display:none}
+  footer{background:#0f1613;color:#9fb2a9;font-size:13px;padding:30px 0}
+  footer a{color:#cfe0d8}
+  .legal{font-size:12px;color:#7d9087;margin-top:14px}
+</style>
+</head>
+<body>
+
+<!-- 1. STICKY ANNOUNCEMENT BAR (countdown shows ONLY if funnel.config sets a real deadline) -->
+<div class="bar" data-bar>{{BAR_TEXT — e.g. "Launch price ends soon"}} <span data-countdown hidden></span></div>
+
+<!-- 2. HERO -->
+<header class="section center">
+  <div class="wrap">
+    <span class="eyebrow">{{EYEBROW — e.g. "For parents of kids with ADHD"}}</span>
+    <h1>{{HEADLINE — specific outcome + time frame}}</h1>
+    <p class="muted">{{SUBHEAD — one line, the promise in plain words}}</p>
+    <img src="{{HERO_IMAGE}}" alt="{{PRODUCT_NAME}}">
+    <a class="cta" data-cta="checkout" href="#CHECKOUT_URL">{{CTA_PRIMARY — e.g. "Get instant access"}}
+      <small>{{CTA_SUB — e.g. "Instant access · one-time payment"}}</small></a>
+    <div class="trust"><span>✅ Acceso inmediato</span><span>🔒 Pago seguro</span><span>🛡️ {{GUARANTEE_SHORT}}</span></div>
+  </div>
+</header>
+
+<!-- 3. MECHANISM / HOW IT WORKS -->
+<section class="section">
+  <div class="wrap center">
+    <h2>{{MECHANISM_TITLE — the product as a system}}</h2>
+    <p class="muted">{{MECHANISM_SUB}}</p>
+    <div class="grid cols-3" style="counter-reset:step;margin-top:20px">
+      <div class="card step"><span class="n">1</span><h3>{{STEP1_TITLE}}</h3><p class="muted">{{STEP1_TEXT}}</p></div>
+      <div class="card step"><span class="n">2</span><h3>{{STEP2_TITLE}}</h3><p class="muted">{{STEP2_TEXT}}</p></div>
+      <div class="card step"><span class="n">3</span><h3>{{STEP3_TITLE}}</h3><p class="muted">{{STEP3_TEXT}}</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. PROBLEM AGITATION (mirror the ad's hook) -->
+<section class="section">
+  <div class="wrap">
+    <h2 class="center">{{PAIN_TITLE — "Sound familiar?"}}</h2>
+    <ul class="checks pains">
+      <li>{{PAIN_1}}</li><li>{{PAIN_2}}</li><li>{{PAIN_3}}</li><li>{{PAIN_4}}</li>
+    </ul>
+    <p class="center" style="font-weight:700;margin-top:10px">{{PAIN_TURN — "You're not doing it wrong. The method is."}}</p>
+  </div>
+</section>
+
+<!-- 5. OUTCOMES -->
+<section class="section" style="background:var(--card)">
+  <div class="wrap">
+    <h2 class="center">{{OUTCOME_TITLE — "What changes"}}</h2>
+    <ul class="checks">
+      <li>{{OUTCOME_1}}</li><li>{{OUTCOME_2}}</li><li>{{OUTCOME_3}}</li><li>{{OUTCOME_4}}</li><li>{{OUTCOME_5}}</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 6. WHAT'S INSIDE -->
+<section class="section">
+  <div class="wrap">
+    <h2 class="center">{{INCLUDES_TITLE — "Everything you get"}}</h2>
+    <div class="grid cols-2" style="margin-top:20px">
+      <div class="card"><h3>{{ITEM1_TITLE}}</h3><p class="muted">{{ITEM1_TEXT}}</p></div>
+      <div class="card"><h3>{{ITEM2_TITLE}}</h3><p class="muted">{{ITEM2_TEXT}}</p></div>
+      <div class="card"><h3>{{ITEM3_TITLE}}</h3><p class="muted">{{ITEM3_TEXT}}</p></div>
+      <div class="card"><h3>{{ITEM4_TITLE}}</h3><p class="muted">{{ITEM4_TEXT}}</p></div>
+    </div>
+    <a class="cta" data-cta="checkout" href="#CHECKOUT_URL">{{CTA_SECONDARY — "I want this"}}</a>
+  </div>
+</section>
+
+<!-- 7. WHO IT'S FOR / NOT -->
+<section class="section" style="background:var(--card)">
+  <div class="wrap cols-for">
+    <div class="card"><h3>✅ This is for you if…</h3><ul class="checks">
+      <li>{{FOR_1}}</li><li>{{FOR_2}}</li><li>{{FOR_3}}</li></ul></div>
+    <div class="card"><h3>🚫 Not for you if…</h3><ul class="checks pains">
+      <li>{{NOTFOR_1}}</li><li>{{NOTFOR_2}}</li></ul></div>
+  </div>
+</section>
+
+<!-- 8. PROOF  ·  CONTENIDO DE EJEMPLO — reemplaza con los testimonios REALES del vendedor,
+     fotos reales (con permiso) y el conteo/rating real de reseñas antes de publicar. -->
+<section class="section">
+  <div class="wrap">
+    <h2 class="center">{{PROOF_TITLE — "What families say"}}</h2>
+    <p class="center stars">★★★★★ <span class="muted" style="font-size:15px">{{REAL_RATING e.g. "4.9/5 — EXAMPLE, use your real rating & count"}}</span></p>
+    <div class="scroller" style="margin-top:16px">
+      <div class="tcard">★★★★★<p>"{{TESTIMONIAL_1 — EXAMPLE, replace with a real customer quote}}"</p>
+        <div class="who"><img src="{{AVATAR_1 — real customer photo w/ permission}}" alt=""><strong>{{NAME_1}}</strong></div></div>
+      <div class="tcard">★★★★★<p>"{{TESTIMONIAL_2 — EXAMPLE}}"</p>
+        <div class="who"><img src="{{AVATAR_2}}" alt=""><strong>{{NAME_2}}</strong></div></div>
+      <div class="tcard">★★★★★<p>"{{TESTIMONIAL_3 — EXAMPLE}}"</p>
+        <div class="who"><img src="{{AVATAR_3}}" alt=""><strong>{{NAME_3}}</strong></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 9. OFFER STACK + PRICE -->
+<section class="section" style="background:var(--card)">
+  <div class="wrap">
+    <div class="offer center">
+      <h2>{{OFFER_TITLE — "Get {{PRODUCT_NAME}} today"}}</h2>
+      <ul class="stack">
+        <li><span>{{STACK_1}}</span><span class="v">{{STACK_1_VALUE}}</span></li>
+        <li><span>{{STACK_2}}</span><span class="v">{{STACK_2_VALUE}}</span></li>
+        <li><span>{{STACK_3}}</span><span class="v">{{STACK_3_VALUE}}</span></li>
+        <li><span><strong>Total value</strong></span><span class="v"><strong>{{TOTAL_VALUE}}</strong></span></li>
+      </ul>
+      <div class="price"><span class="old">{{OLD_PRICE}}</span>{{PRICE}}</div>
+      <p class="muted">{{PRICE_NOTE — "one-time payment · lifetime access"}}</p>
+      <a class="cta" data-cta="checkout" href="#CHECKOUT_URL">{{CTA_PRICE — "Get it for {{PRICE}}"}}</a>
+      <div class="trust"><span>✅ Acceso inmediato</span><span>🔒 Pago seguro</span><span>🛡️ {{GUARANTEE_SHORT}}</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 10. GUARANTEE -->
+<section class="section">
+  <div class="wrap guarantee">
+    <img src="{{GUARANTEE_BADGE}}" alt="{{GUARANTEE_SHORT}}">
+    <div><h2>{{GUARANTEE_TITLE}}</h2><p class="muted">{{GUARANTEE_TEXT — the real, conditional guarantee}}</p></div>
+  </div>
+</section>
+
+<!-- 11. SCARCITY  ·  muestra solo datos reales. El toast en vivo y cualquier "quedan N" debe reflejar
+     stock/pedidos reales; si no, déjalo como urgencia honesta anclada en el valor. -->
+<section class="section"><div class="wrap">
+  <div class="scarcity">{{SCARCITY_LINE — e.g. "Launch price. It goes up when the launch ends."}}</div>
+</div></section>
+
+<!-- 12. FAQ -->
+<section class="section" style="background:var(--card)"><div class="wrap" data-faq>
+  <h2 class="center">Preguntas frecuentes</h2>
+  <details><summary>{{Q1}}</summary><div class="a">{{A1}}</div></details>
+  <details><summary>{{Q2}}</summary><div class="a">{{A2}}</div></details>
+  <details><summary>{{Q3}}</summary><div class="a">{{A3}}</div></details>
+  <details><summary>{{Q4 — about the refund}}</summary><div class="a">{{A4}}</div></details>
+</div></section>
+
+<!-- 13. FINAL CTA -->
+<section class="section center"><div class="wrap">
+  <h2>{{FINAL_TITLE}}</h2>
+  <div class="price">{{PRICE}}</div>
+  <a class="cta" data-cta="checkout" href="#CHECKOUT_URL">{{CTA_FINAL}}</a>
+</div></section>
+
+<!-- 14. FOOTER + LEGAL -->
+<footer><div class="wrap">
+  <p>© <span id="y"></span> {{BRAND}} · <a href="{{PRIVACY_URL}}">Privacy</a> · <a href="{{TERMS_URL}}">Terms</a> · <a href="{{REFUND_URL}}">Refund</a></p>
+  <p class="legal">{{LEGAL_DISCLAIMER — e.g. results vary; not medical advice; This site is not part of or endorsed by Facebook / Meta.}}</p>
+</div></footer>
+
+<!-- 15. EXIT POPUP (shown once per visitor by funnel.js) -->
+<div class="popup" data-exit hidden><div class="box">
+  <h3>{{EXIT_TITLE — "Before you go…"}}</h3>
+  <p class="muted">{{EXIT_TEXT — restate the honest offer}}</p>
+  <a class="cta" data-cta="checkout" href="#CHECKOUT_URL">{{EXIT_CTA}}</a>
+  <button class="cta" style="background:#eee;color:#333;box-shadow:none" data-exit-close>No, gracias</button>
+</div></div>
+
+<!-- LIVE-PURCHASE TOAST · oculto salvo que funnel.config.proof.live sea una lista REAL de pedidos -->
+<div class="toast" data-proof-live hidden></div>
+
+<script>document.getElementById('y').textContent=new Date().getFullYear()</script>
+<script src="./funnel.config.js" defer></script>
+<script src="../assets/kit/funnel.js" defer></script>
+</body>
+</html>

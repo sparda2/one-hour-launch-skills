@@ -206,7 +206,15 @@ message the page must match.
 2. **Copy brief** (`_research/brief.md`): map the source offer + the winning
    ad angle onto the proven section order. Headline options (3), each
    section's angle, the offer stack, the real guarantee, the FAQ objections.
-3. **Build the pages** as self-contained, mobile-first, fast-loading static
+3. **Start from `templates/sales-page.html` + `templates/funnel.config.js`**
+   (the proven structure, mobile-responsive, with every section and every
+   proof/urgency component already built and styled, filled with sample
+   content marked `EXAMPLE — replace with your real …`). Replace every
+   `{{TOKEN}}` with the product's real content; write persuasive sample copy
+   for each section modeled on the reference; keep the EXAMPLE markers on
+   proof blocks so the seller swaps in their own real testimonials, photos,
+   rating and scarcity (see `references/page-structure.md` → proof & urgency).
+   **Build the pages** as self-contained, mobile-first, fast-loading static
    HTML (inline CSS, system font stack or one web font, no heavy frameworks;
    lazy-load images; a tiny bit of JS only for the honest components —
    accordion FAQ, sticky bar, a real-deadline countdown if PUBLISH confirms a
