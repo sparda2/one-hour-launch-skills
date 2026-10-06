@@ -8,29 +8,29 @@ This guide takes you from zero to your first offer hunt. Read it once, top to bo
 
 ## ⚡ The fast way (recommended): let the skill set itself up
 
-You don't need to read the rest of this guide. The Offer Hunter has a **guided setup** built in: it checks what's missing, tells you exactly what to click, and takes you all the way to your first hunt.
+You don't need to read the rest of this guide. The Offer Hunter has a **guided setup** built in: it checks what's missing, tells you exactly what to click, and takes you all the way to your first hunt. **Everything is saved in your Google Drive**: your results, settings and keywords all live in one Google Sheet. No GitHub, no files on your computer.
 
-1. **Create your workspace.** On GitHub, go to **github.com/new**, name it `my-launch-workspace`, choose **Private**, and click **Create repository**.
-2. **Open Claude Code in the cloud.** Go to **claude.ai/code**, or in the Claude desktop app open **Code** and choose **Cloud**. Start a new session on `my-launch-workspace`. If GitHub asks for permission, allow access to that repository.
-3. **Upload the skill.** Download `en/skills/offer-hunter/SKILL.md` from this pack and attach it to your first message.
-4. **Type:**
+1. **Install the skill (once).** Go to **claude.ai → Settings → Capabilities → Skills → Upload skill** and choose `dist/offer-hunter-EN.zip` from this pack. Your skills sync to Claude Code, so it's available there too.
+2. **Open Claude Code in the cloud.** In the Claude desktop app, open **Code** and choose **Cloud**, or go to **claude.ai/code**. Start a new session. If it asks for a repository, pick any of yours: the hunter doesn't save anything there.
+3. **Type:**
    ```
-   Set this up for me step by step, then run my first offer hunt.
+   Set up the offer hunter for me step by step, then run my first hunt.
    ```
+   If Claude doesn't recognize the skill, attach `en/skills/offer-hunter/SKILL.md` to that message.
 
 Claude then guides you, one step at a time:
 
 | ✅ | Step | What happens |
 |---|---|---|
-| 1 | Workspace | It checks it can save to your GitHub repository, so nothing is lost when the session ends |
-| 2 | Install | It saves the skill into your workspace, so `/offer-hunter` works in every future session |
-| 3 | Connections | It checks for the **Meta Ads** and **Google Drive** connectors and internet access, and gives you one short click-by-click list for anything missing |
-| 4 | One restart | Connectors only load in a new session. It saves your progress and gives you a message to paste into the new session to continue |
+| 1 | Check | It checks the skill is installed, that the **Meta Ads** and **Google Drive** connectors are connected, and that it has internet access |
+| 2 | Fix | One short click-by-click list for anything missing |
+| 3 | One restart | Connectors only load in a new session. You open a new session and paste the one-line message it gives you |
+| 4 | Your home | It creates an **"Offer Hunter" folder** in your Drive with your master Google Sheet, and gives you the link |
 | 5 | Your settings | It asks for your product filter, niches and pages, in at most 2 rounds |
-| 6 | Quick test | One test search on Meta, and it creates your master Google Sheet and gives you the link |
-| 7 | First hunt | 20–40 minutes, ending with your top 3 offers of the day |
+| 6 | Quick test | One test search on Meta, and it builds your keyword bank |
+| 7 | First hunt | 20–40 minutes, ending with your top 3 offers of the day. You can close the window: it keeps running in the cloud |
 
-> **After setup**, every time you want to hunt, open a session on `my-launch-workspace` and type `/offer-hunter`.
+> **After setup**, every time you want to hunt, start a cloud session and type `/offer-hunter`. Your results are always in the "Offer Hunter — Master" sheet in your Drive.
 
 The sections below are the reference: what each piece is, other ways to install (your own computer, Grok Bot), automation, and troubleshooting.
 
@@ -40,7 +40,7 @@ The sections below are the reference: what each piece is, other ways to install 
 
 | Step | Skill | What it does | Status |
 |---|---|---|---|
-| 1 | **Offer Hunter** | Finds offers that are scaling right now in Meta's Ad Library and logs them in a master Google Sheet (or Excel) with their history | ✅ Ready |
+| 1 | **Offer Hunter** | Finds offers that are scaling right now in Meta's Ad Library and logs them in a master Google Sheet in your Drive, with their history | ✅ Ready |
 | 2 | **Product Modeler** | Turns a winning offer into the spec of your own product | 🚧 Coming |
 | 3 | **Funnel Modeler** | Builds your funnel using a proven landing page structure | 🚧 Coming |
 | 4 | **Ads Routine** | Creates 5 new image ads per product every day, modeled on the world's best advertisers | ✅ Ready |
@@ -134,8 +134,6 @@ On the first run, the Offer Hunter asks you for the settings below. Have your an
 | **Languages** | Which languages to search in | All languages, English first (default) |
 | **Minimum ads** | How many active ads an offer needs to count as scaling | 15 (default). Use 10 for small niches. |
 | **Daily minimum** | How many new verified offers per run to aim for | 5 (default) |
-| **Output** | Google Sheet (default) or a local Excel file | Google Sheet. Paste a sheet link, or let the hunter create one in your Drive |
-| **Work folder** | Where the keyword bank goes | `./offer-hunter/` (default) |
 
 You don't need a keyword bank or a sheet. On the first run the hunter creates both and gives you the sheet link.
 
@@ -153,11 +151,11 @@ You don't need a keyword bank or a sheet. On the first run the hunter creates bo
 
 ### Where your answers are saved
 
-They're saved in **`launch-profile.md`** at the root of your work folder. The skills write this file themselves. You can open it to see your settings, but you never have to edit it.
+**Offer Hunter:** in the **Settings** tab of your "Offer Hunter — Master" Google Sheet. **Ads Routine:** in `launch-profile.md` in your work folder. The skills write these themselves. You can look at them, but you never have to edit them.
 
 ### Your own rules
 
-When a result isn't what you want, say *"add to my rules: …"*. The rule is saved in **`my-rules.md`** in your work folder, and every run of every skill reads it automatically. Updating the pack never overwrites this file.
+When a result isn't what you want, say *"add to my rules: …"*. The rule is saved in the **My Rules** tab of your Offer Hunter sheet (Ads Routine: `my-rules.md` in your work folder), and every run reads it automatically. Updating the pack never overwrites your rules.
 
 ### Changing settings later
 
@@ -177,7 +175,7 @@ Pick a time, for example 8:00 AM, and use exactly this prompt:
 
 ```
 Run the offer-hunter skill in unattended mode, using the saved settings
-in launch-profile.md. Follow the skill to the letter; do not run the
+in the Settings tab of the "Offer Hunter — Master" sheet. Follow the skill to the letter; do not run the
 routine from memory. If the skill is not available, stop and report it.
 Context: you are the daily scheduled run.
 ```
@@ -209,7 +207,7 @@ Then restart Claude Code. Your settings and your sheet are not affected.
 | Every Ad Library search returns 0 results | The Ad Library is limiting searches. The skill waits 3–5 minutes on its own. Don't log out. |
 | It finds products you can't make | Your filter is too loose. Tighten it with *"change some"*. |
 | Your own page shows up as competition | Add it to your own pages with *"change some"*, then delete its row from the sheet. |
-| The sheet is broken or has duplicate rows | In Google Sheets: File → Version history, restore the version from before the run (its start time is in the Search Log tab). Excel users: restore `offers-master-backup.xlsx`. |
+| The sheet is broken or has duplicate rows | In Google Sheets: File → Version history, restore the version from before the run (its start time is in the Search Log tab). |
 | "Can't write to the sheet" | Connect the Google Drive connector (claude.ai → Settings → Connectors) and start a new session. The day's results are kept in a `pending-sync` file and synced on the next run. |
 | A scheduled run stopped with "missing settings" | Run the skill once yourself, in interactive mode, to save your settings. |
 

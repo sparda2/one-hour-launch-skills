@@ -1,6 +1,6 @@
 # One Hour Launch Skills
 
-> **Students: start with [`en/START-HERE.md`](en/START-HERE.md).** Fastest path: upload `en/skills/offer-hunter/SKILL.md` to a Claude Code session and say *"Set this up for me step by step"*. The skill guides you from zero to your first hunt.
+> **Students: start with [`en/START-HERE.md`](en/START-HERE.md).** Fastest path: upload `dist/offer-hunter-EN.zip` at claude.ai → Settings → Capabilities → Skills, open a Claude Code cloud session and say *"Set up the offer hunter for me step by step"*. All data lives in the student's Google Drive.
 
 The full launch system as Claude Code skills.
 
@@ -19,6 +19,7 @@ Each step's output feeds the next one: winning offer → product spec → funnel
 ## Layout
 
 ```
+dist/                             ← ready-to-upload skill ZIPs (claude.ai → Settings → Capabilities → Skills)
 .claude-plugin/marketplace.json   ← marketplace: lists both plugins
 en/                               ← plugin "one-hour-launch" (master)
   .claude-plugin/plugin.json
@@ -57,7 +58,7 @@ To auto-enable in a workspace repo (so every cloud session opening it has the sk
 
 ## How settings work
 
-No config files to edit. Each skill **asks for its settings** at the start of a run, then saves the answers to `launch-profile.md` in the user's project, with one section per skill and `## Shared` for settings every skill uses. Later runs offer "same / change some / start fresh". Unattended runs (scheduled, Grok Bot, `claude -p`) never ask questions: they use the saved profile and stop if an essential setting is missing. Users add their own rules in `my-rules.md`, which every skill reads and pack updates never overwrite.
+No config files to edit. Each skill **asks for its settings** at the start of a run and saves the answers in the user's Google Drive (the Offer Hunter keeps everything, including settings, keywords and personal rules, as tabs of one master Google Sheet). Later runs offer "same / change some / start fresh". Unattended runs (scheduled, Grok Bot, `claude -p`) never ask questions: they use the saved profile and stop if an essential setting is missing. Users add their own rules (Offer Hunter: the "My Rules" tab), which every run reads and pack updates never overwrite.
 
 ## Rule for editing
 

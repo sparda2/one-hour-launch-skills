@@ -4,17 +4,16 @@ Skill: `/offer-hunter` · Suggested schedule: daily, 8:00 AM · Your market rada
 
 ## 1. What it is and what you need
 
-Every morning the hunter sweeps Meta's Ad Library looking for offers that ARE scaling (advertisers with many active ads for the same product, running for several days) and logs them in a master Google Sheet (or Excel) with their history and trend. It's the first routine of the day because it feeds all the others: it produces product ideas with proven demand and tested sales angles.
+Every morning the hunter sweeps Meta's Ad Library looking for offers that ARE scaling (advertisers with many active ads for the same product, running for several days) and logs them in a master Google Sheet in your Drive, with their history and trend. It's the first routine of the day because it feeds all the others: it produces product ideas with proven demand and tested sales angles.
 
 | Requirement | What it's used for | How to know you have it |
 |---|---|---|
 | Meta Ads connector in Claude Code | API search of the Ad Library (`ads_library_search`) — the cheap, block-free way | Ask Claude: "do you have access to ads_library_search?" |
 | Google Drive connector | Read and write your master Google Sheet | Ask Claude: "can you create a Google Sheet in my Drive?" |
-| (Only if you choose Excel output) Python with openpyxl | Read and update a local Excel without breaking it | Claude installs it if missing — do nothing |
 
 ## 2. Installation and settings
 
-Install the pack by following **START-HERE.md**. There's no config file to fill in. On the first run the hunter asks you for these settings and saves them to `launch-profile.md`:
+Install the pack by following **START-HERE.md**. There's no config file to fill in. On the first run the hunter asks you for these settings and saves them in the **Settings** tab of your "Offer Hunter — Master" Google Sheet:
 
 | Setting | What it is | Example / default |
 |---|---|---|
@@ -24,8 +23,7 @@ Install the pack by following **START-HERE.md**. There's no config file to fill 
 | Languages | Where to hunt | All languages, English first (default) |
 | Min ads | The "is scaling" threshold | 15 (default). If your niche is small, drop to 10, but note that you lowered the bar |
 | Daily floor | Minimum new verified findings per run | 5 (default). The summary must be honest if it isn't reached. Never pad with mediocre ones |
-| Output / master sheet | Where the offers are logged | A Google Sheet (default): paste its link, or the hunter creates one in your Drive on the first run. Excel is optional |
-| Work folder | Where the keyword bank lives | `./offer-hunter/` (default). A 100+ keyword bank is created on the first run |
+| Master sheet | Where everything is saved | Created on the first run in an "Offer Hunter" folder in your Drive. Tabs: Offers, Pending, History, Search Log, Keywords, Settings, My Rules |
 
 On later runs it shows your saved settings and asks: *"Hunt with these, change some, or start fresh?"* For a one-off change, put it in the command: `/offer-hunter min ads 10`.
 
@@ -46,7 +44,7 @@ Create a daily task: a scheduled task in the Claude desktop app, or claude.ai/co
 
 ```
 Run the offer-hunter skill in unattended mode, using the saved settings
-in launch-profile.md. Follow the skill to the letter; do not run the
+in the Settings tab of the "Offer Hunter — Master" sheet. Follow the skill to the letter; do not run the
 routine from memory. If the skill is not available, stop and report it.
 Context: you are the daily scheduled run at 8:00 AM.
 ```
@@ -62,7 +60,7 @@ Context: you are the daily scheduled run at 8:00 AM.
 - **Once a week (10 min):** prune the Pending sheet (what never took off, out) and review the Log to see which keywords are already burned.
 - Don't edit the sheet by hand while the routine is running. Google Sheets keeps version history, but it's better not to cross paths.
 - Feed the keyword bank when you discover a new angle (a profession, a language, a format).
-- Got a lesson of your own? Say "add to my rules: …". It's saved in `my-rules.md`, which every run reads automatically.
+- Got a lesson of your own? Say "add to my rules: …". It's saved in the My Rules tab, which every run reads automatically.
 
 ## 6. Common problems
 
@@ -72,7 +70,7 @@ Context: you are the daily scheduled run at 8:00 AM.
 | Brings findings you can't replicate | Your filter is loose | Tighten it with *"change some"* and tell Claude to re-evaluate the latest findings against the new filter |
 | Your own page shows up as competition | Missing from your own pages | Run with *"change some"*, add its page_id, and delete the row from the sheet |
 | Counts that don't match what you see | You're reading "N ads use this creative" (variants of ONE ad) | The real count is the advertiser PAGE total (`view_all_page_id`) |
-| Broken sheet or duplicate rows | Run interrupted mid-write | Google Sheets: File → Version history, restore the version from before the run (its start time is in the Search Log). Excel: restore `*-backup.xlsx` |
+| Broken sheet or duplicate rows | Run interrupted mid-write | Google Sheets: File → Version history, restore the version from before the run (its start time is in the Search Log). |
 
 ## 7. Checklist for this skill
 
