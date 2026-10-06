@@ -1,22 +1,80 @@
 ---
 name: cazador-de-ofertas
-description: Caza diaria de ofertas escalando en la biblioteca de anuncios de Meta según tu filtro de formato, y actualiza tu Excel maestro con el histórico. Usar cuando el usuario diga 'cazar ofertas', 'el cazador', 'buscar ofertas escalando' o pida el barrido del Excel maestro.
+description: Caza diaria de ofertas escalando en la biblioteca de anuncios de Meta según tu filtro de formato, y actualiza tu Excel maestro con el histórico. Pide sus ajustes al inicio (o reutiliza los últimos). Usar cuando el usuario diga 'cazar ofertas', 'el cazador', 'buscar ofertas escalando' o pida el barrido del Excel maestro.
 ---
 
-> **PLANTILLA — ADAPTA ANTES DE CORRER.** Rellena el bloque CONFIGURACIÓN.
-> Esta skill es la fuente canónica de la rutina: la tarea programada solo la
-> lee y la ejecuta. Editar la rutina = editar este archivo.
+# PASO 0 — AJUSTES DE LA CAZA (pregunta, jamás asumas)
 
-# CONFIGURACIÓN (rellena TODO antes de la primera corrida)
+Esta skill NO tiene bloque de configuración que editar. Obtiene sus ajustes de
+la persona al inicio de cada caza y recuerda las últimas respuestas en un
+archivo de perfil que escribe ella misma. Esta skill es la fuente canónica de
+la rutina: las corridas programadas solo apuntan a ella. Editar la rutina =
+editar este archivo.
 
-- CARPETA_TRABAJO: <ruta local de tu carpeta de caza, idealmente sincronizada con Drive>
-- EXCEL_MAESTRO: <nombre de tu archivo, p. ej. ofertas-master.xlsx — SIEMPRE el mismo archivo>
-- TU_FILTRO: <qué formato de producto puedes replicar TÚ (p. ej. "toolkits digitales descargables de ticket bajo, replicables con IA"). Solo se registra lo que pase este filtro>
-- NICHOS_CIRCULOS: <círculo 1 = tus nichos actuales; círculo 2 = mismo comprador; círculo 3 = adyacentes. La caza va en ese orden>
-- PAGINAS_PROPIAS: <lista de TUS páginas/tiendas, para EXCLUIRLAS de la caza — si no, te "descubres" a ti mismo como competencia>
-- BANCO_KEYWORDS: <archivo con tu banco de keywords por categorías e idiomas; ármate uno de cientos>
-- MINIMO_ADS: <umbral de anuncios activos del mismo producto para considerarlo "escalando"; sugerido: 15>
-- PISO_DIARIO: <hallazgos nuevos verificados mínimos por corrida; sugerido: 5>
+## Los ajustes
+
+| Ajuste | Qué es | Por defecto si a la persona le da igual |
+|---|---|---|
+| CARPETA_TRABAJO | Carpeta donde viven el Excel, el banco de keywords y los backups | `./cazador-de-ofertas/` en el proyecto actual |
+| EXCEL_MAESTRO | El archivo maestro único (SIEMPRE el mismo) | `ofertas-master.xlsx` |
+| TU_FILTRO | El formato de producto que la persona puede replicar. Solo se registra lo que lo pase. P. ej. "toolkits digitales descargables de ticket bajo (guías PDF, plantillas, packs de prompts) que pueda producir con IA en días; nada de cursos en video, coaching ni servicios" | **Ninguno — hay que preguntarlo** |
+| NICHOS_CIRCULOS | Círculo 1 = nichos actuales; 2 = mismo comprador, otros temas; 3 = adyacentes. 3-5 por círculo. La caza va en ese orden | **Ninguno — hay que preguntarlo** |
+| PAGINAS_PROPIAS | Las páginas de Facebook de la persona (nombres o page_id), EXCLUIDAS de la caza | Preguntar; "ninguna" solo si la persona lo dice |
+| IDIOMAS | Idiomas en los que buscar | Todos, inglés primero |
+| MINIMO_ADS | Anuncios activos del mismo producto para considerarlo "escalando" | 15 |
+| PISO_DIARIO | Hallazgos nuevos verificados mínimos por corrida | 5 |
+| BANCO_KEYWORDS | Archivo del banco de keywords por categoría e idioma | `CARPETA_TRABAJO/banco-keywords.md` |
+
+## El archivo de perfil
+
+`launch-profile.md` en la raíz del proyecto actual, sección
+`## Offer hunter` (las demás skills del pack guardan su propia sección en el
+mismo archivo; `## Shared` guarda PAGINAS_PROPIAS para todas). Guarda las
+últimas respuestas con su fecha. Lo escribe ESTA SKILL — nadie tiene que
+editarlo a mano (puede, si quiere). Jamás guardes contraseñas, tokens ni API
+keys en él.
+
+## Reglas personales
+
+Si existe `my-rules.md` en la raíz del proyecto actual, léelo antes de
+empezar y aplica cada regla como regla DURA adicional de esta corrida. Es cómo
+la persona añade sus propias lecciones sin editar esta skill (las
+actualizaciones del pack sobrescribirían los cambios aquí). Si una regla
+personal contradice una de esta skill, sigue la personal y menciónalo en el
+resumen final. Cuando la persona rechace algo y enuncie una regla, ofrece
+añadirla a `my-rules.md` (créalo si no existe).
+
+## Cómo obtener los ajustes
+
+1. **Los ajustes del mensaje de invocación mandan.** P. ej. `/cazador-de-ofertas
+   nichos: planes keto, mínimo 10 ads` → úsalos directamente y no los vuelvas a
+   preguntar.
+2. **Corrida interactiva (hay una persona en el chat):**
+   - Existe perfil → muestra los ajustes guardados en UNA tabla compacta y haz
+     UNA pregunta: "¿Cazamos con estos, cambias algunos o empezamos de cero?"
+   - No hay perfil (primera vez) → pide los ajustes que falten en COMO MÁXIMO 2
+     rondas. Usa la tool AskUserQuestion si está disponible para los de opción
+     (IDIOMAS, MINIMO_ADS, PISO_DIARIO) y chat normal para los de texto libre
+     (TU_FILTRO, NICHOS_CIRCULOS, PAGINAS_PROPIAS). Da el ejemplo de la tabla
+     con cada pregunta. Ofrece los valores por defecto; jamás inventes
+     TU_FILTRO ni NICHOS_CIRCULOS — si son vagos, ayuda a afinarlos.
+   - Después imprime la tabla final de ajustes y ARRANCA la caza (sin otra
+     ronda de confirmación).
+3. **Corrida desatendida (tarea programada, Grok Bot, `claude -p` headless, o
+   el mensaje dice "desatendida"/"unattended"):** NUNCA preguntes — no hay
+   nadie para responder. Usa los ajustes del mensaje, completa con el perfil y
+   luego con los valores por defecto. Si aún faltan TU_FILTRO o
+   NICHOS_CIRCULOS: PARA sin cazar e imprime qué ajustes faltan más un comando
+   de ejemplo que los incluya.
+4. **Guarda** los ajustes finales en el perfil (actualiza la sección
+   `## Offer hunter` en su lugar, con la fecha de hoy) antes de empezar.
+5. **Banco de keywords:** si BANCO_KEYWORDS no existe, genera uno (100+
+   keywords por círculo de nicho × IDIOMAS, ángulos consumidor Y profesional,
+   keywords de DOCUMENTO para B2B: checklist, plantilla, protocolo, ficha),
+   guárdalo y di en una línea dónde está.
+6. **Excel maestro:** si no existe, créalo con las 4 hojas descritas abajo
+   ("Ofertas", "Pendientes", "Histórico", "Log de búsquedas"). A partir de ahí,
+   NUNCA crees otro.
 
 # LA RUTINA
 

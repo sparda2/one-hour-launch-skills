@@ -1,30 +1,83 @@
 ---
 name: rutina-de-ads
-description: Pipeline diario completo de creativos para Meta Ads: lee tu Sheet maestro de productos, investiga a los mejores anunciantes por API en la Ads Library (cero navegador), genera 5 anuncios de imagen nuevos por producto con IA, los audita uno a uno y los entrega a Drive con links en el Sheet. Usar cuando el usuario diga 'la rutina de ads', 'corre la rutina', 'regenera los anuncios' o pida los 5 ads de un producto.
+description: Pipeline diario completo de creativos para Meta Ads: lee tu Sheet maestro de productos, investiga a los mejores anunciantes por API en la Ads Library (cero navegador), genera 5 anuncios de imagen nuevos por producto con IA, los audita uno a uno y los entrega a Drive con links en el Sheet. Pide sus ajustes al inicio (o reutiliza los últimos). Usar cuando el usuario diga 'la rutina de ads', 'corre la rutina', 'regenera los anuncios' o pida los 5 ads de un producto.
 ---
 
-> **PLANTILLA — ADAPTA ANTES DE CORRER.** Rellena el bloque CONFIGURACIÓN.
-> Esta skill es la fuente canónica de la rutina: la tarea programada solo la
-> lee y la ejecuta. Editar la rutina = editar este archivo.
 > Versión 2 (4-ago-2026): research 100% por API, banco de ganadores, agente
 > visual y disciplina de costes — todo medido en producción real.
 
-# CONFIGURACIÓN (rellena TODO antes de la primera corrida)
+# PASO 0 — AJUSTES DE LA CORRIDA (pregunta, jamás asumas)
 
-- SHEET_MAESTRO: <ID de tu Google Sheet de productos. Columnas: PRODUCTO | LINK PRODUCTO (landing) | IDIOMA | LINK RESEARCH | LINK CREATIVOS. Una fila = un producto>
-- CARPETA_BASE: <ruta local de tu carpeta de anuncios, sincronizada con Drive; dentro: una subcarpeta por producto y una carpeta _assets/ para el material interno (research, banco, specs, auditoría)>
-- MOTOR_IMAGENES: <tu generador de imágenes IA más potente y su comando (CLI o conector), a la máxima resolución que ofrezca, aspect ratio 1:1>
-- MOTOR_LIMITES: <límite de jobs simultáneos de tu plan (p. ej. 8) — se respeta con un semáforo, no lanzando de menos>
-- PAGINAS_PROPIAS: <tus páginas/tiendas, para EXCLUIRLAS del research de competencia>
-- REGLAS_NICHO: <tus reglas de compliance según nicho: salud = sin claims médicos ni dosis; dinero = sin promesas de ingresos; etc.>
-- MODELO_TOP: <el modelo Claude más potente de tu plan — SOLO para donde se diseña: director+crítico y reparador>
-- MODELO_ECO: <un modelo económico (p. ej. Sonnet) — research, generación, auditoría y la sesión que orquesta>
-- DEADLINE: <hora límite de entrega, p. ej. "1 hora después del arranque". Lo que no llegue, se reporta con causa — la corrida no se estira>
+Esta skill NO tiene bloque de configuración que editar. Obtiene sus ajustes de
+la persona al inicio de cada corrida y recuerda las últimas respuestas en un
+archivo de perfil que escribe ella misma. Esta skill es la fuente canónica de
+la rutina: las corridas programadas solo apuntan a ella. Editar la rutina =
+editar este archivo.
+
+## Los ajustes
+
+| Ajuste | Qué es | Por defecto si a la persona le da igual |
+|---|---|---|
+| SHEET_MAESTRO | ID o URL del Google Sheet de productos. Columnas: PRODUCTO \| LINK PRODUCTO (landing) \| IDIOMA \| LINK RESEARCH \| LINK CREATIVOS. Una fila = un producto | **Ninguno — hay que preguntarlo** |
+| PRODUCTOS_CORRIDA | Qué filas del Sheet correr | Todas (en la primerísima corrida: sugerir UN solo producto) |
+| CARPETA_BASE | Carpeta de anuncios: una subcarpeta por producto + `_assets/` (research, banco, specs, auditoría) | `./ads/` en el proyecto actual |
+| MOTOR_IMAGENES | El generador de imágenes IA más potente disponible y su comando exacto (CLI o conector), máxima resolución, 1:1 | **Ninguno — hay que preguntarlo** |
+| MOTOR_LIMITES | Límite de jobs simultáneos del plan de imágenes — se respeta con un semáforo, no lanzando de menos | Preguntar; 4 si no se sabe |
+| PAGINAS_PROPIAS | Las páginas de la persona, EXCLUIDAS del research de competencia | De la sección `## Shared` del perfil; si no, preguntar |
+| REGLAS_NICHO | Compliance por nicho: salud = sin claims médicos ni dosis; dinero = sin promesas de ingresos; etc. | Sin claims médicos, dosis, promesas de ingresos, antes/después ni ratings inventados |
+| MODELO_TOP | El modelo Claude más potente del plan — SOLO donde se diseña: director+crítico y reparador | El modelo más capaz disponible |
+| MODELO_ECO | Un modelo económico — research, generación, auditoría y la sesión que orquesta | Un modelo tipo Sonnet |
+| DEADLINE | Hora límite de entrega. Lo que no llegue, se reporta con causa — la corrida no se estira | 1 hora después del arranque |
+
+## El archivo de perfil
+
+`launch-profile.md` en la raíz del proyecto actual, sección `## Ads routine`
+(las demás skills del pack guardan su propia sección en el mismo archivo;
+`## Shared` guarda PAGINAS_PROPIAS para todas). Guarda las últimas respuestas
+con su fecha. Lo escribe ESTA SKILL — nadie tiene que editarlo a mano (puede,
+si quiere). Jamás guardes contraseñas, tokens ni API keys en él.
+
+## Reglas personales
+
+Si existe `my-rules.md` en la raíz del proyecto actual, léelo antes de
+empezar y aplica cada regla como regla DURA adicional de esta corrida. Es cómo
+la persona añade sus propias lecciones sin editar esta skill (las
+actualizaciones del pack sobrescribirían los cambios aquí). Si una regla
+personal contradice una de esta skill, sigue la personal y menciónalo en el
+resumen final. Cuando la persona rechace algo y enuncie una regla, ofrece
+añadirla a `my-rules.md` (créalo si no existe).
+
+## Cómo obtener los ajustes
+
+1. **Los ajustes del mensaje de invocación mandan.** P. ej. `/rutina-de-ads solo
+   para <PRODUCTO>` → PRODUCTOS_CORRIDA queda fijado; no lo vuelvas a preguntar.
+2. **Corrida interactiva (hay una persona en el chat):**
+   - Existe perfil → muestra los ajustes guardados en UNA tabla compacta y haz
+     UNA pregunta: "¿Corremos con estos, cambias algunos o empezamos de cero?"
+   - No hay perfil (primera vez) → pide los ajustes que falten en COMO MÁXIMO 2
+     rondas. Usa la tool AskUserQuestion si está disponible para los de opción
+     y chat normal para los de texto libre. Da un ejemplo con cada pregunta y
+     ofrece los valores por defecto.
+   - Solo la primera vez: prueba el MOTOR_IMAGENES con UNA generación barata
+     antes del pipeline (el comando funciona, hay créditos) y confirma que el
+     SHEET_MAESTRO se puede leer. Si algo falla, PARA y di exactamente qué
+     arreglar.
+   - Después imprime la tabla final de ajustes y ARRANCA (sin otra ronda de
+     confirmación).
+3. **Corrida desatendida (tarea programada, Grok Bot, `claude -p` headless, o
+   el mensaje dice "desatendida"/"unattended"):** NUNCA preguntes — no hay
+   nadie para responder. Usa los ajustes del mensaje, completa con el perfil y
+   luego con los valores por defecto. Si aún faltan SHEET_MAESTRO o
+   MOTOR_IMAGENES: PARA sin correr e imprime qué ajustes faltan más un comando
+   de ejemplo que los incluya.
+4. **Guarda** los ajustes finales en el perfil (actualiza la sección
+   `## Ads routine` en su lugar, con la fecha de hoy; PAGINAS_PROPIAS va a
+   `## Shared`) antes de empezar.
 
 # LA RUTINA
 
 Ejecuta el pipeline COMPLETO cada corrida: se regenera TODO cada día, todos los
-productos del Sheet, y los anuncios nuevos deben ser DIFERENTES a los de ayer.
+productos de PRODUCTOS_CORRIDA, y los anuncios nuevos deben ser DIFERENTES a los de ayer.
 Filosofía madre: **SE MODELA A LOS MEJORES ANUNCIANTES DEL MUNDO — jamás
 reinventar la rueda.** La creatividad está en la ADAPTACIÓN fiel a tu producto.
 Reporta corto, resultados, cero teoría.

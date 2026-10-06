@@ -1,30 +1,82 @@
 ---
 name: ads-routine
-description: Full daily creative pipeline for Meta Ads: reads your master products Sheet, researches the best advertisers via API in the Ad Library (zero browser), generates 5 new AI image ads per product, audits them one by one and delivers them to Drive with links in the Sheet. Use when the user says 'the ads routine', 'run the routine', 'regenerate the ads' or asks for the 5 ads of a product.
+description: Full daily creative pipeline for Meta Ads: reads your master products Sheet, researches the best advertisers via API in the Ad Library (zero browser), generates 5 new AI image ads per product, audits them one by one and delivers them to Drive with links in the Sheet. Asks for its settings at the start (or reuses the last ones). Use when the user says 'the ads routine', 'run the routine', 'regenerate the ads' or asks for the 5 ads of a product.
 ---
 
-> **TEMPLATE — ADAPT BEFORE RUNNING.** Fill in the CONFIGURATION block.
-> This skill is the canonical source of the routine: the scheduled task only
-> reads it and runs it. Editing the routine = editing this file.
 > Version 2 (Aug 4, 2026): 100% API research, winners bank, visual agent
 > and cost discipline — all measured in real production.
 
-# CONFIGURATION (fill in EVERYTHING before the first run)
+# STEP 0 — RUN SETTINGS (ask, never assume)
 
-- MASTER_SHEET: <ID of your Google Sheet of products. Columns: PRODUCT | PRODUCT LINK (landing) | LANGUAGE | RESEARCH LINK | CREATIVES LINK. One row = one product>
-- BASE_FOLDER: <local path of your ads folder, synced with Drive; inside: one subfolder per product and an _assets/ folder for internal material (research, bank, specs, audit)>
-- IMAGE_ENGINE: <your most powerful AI image generator and its command (CLI or connector), at the highest resolution it offers, aspect ratio 1:1>
-- ENGINE_LIMITS: <your plan's simultaneous job limit (e.g. 8) — enforced with a semaphore, not by launching fewer>
-- OWN_PAGES: <your pages/stores, to EXCLUDE them from competitor research>
-- NICHE_RULES: <your compliance rules by niche: health = no medical claims or dosages; money = no income promises; etc.>
-- TOP_MODEL: <the most powerful Claude model on your plan — ONLY where design happens: director+critic and repairer>
-- ECO_MODEL: <an economical model (e.g. Sonnet) — research, generation, audit and the orchestrating session>
-- DEADLINE: <delivery cutoff, e.g. "1 hour after start". Whatever doesn't make it is reported with its cause — the run is not stretched>
+This skill has NO config block to edit. It gets its settings from the person
+at the start of every run, and remembers the last answers in a profile file it
+writes itself. This skill is the canonical source of the routine: scheduled
+runs only point at it. Editing the routine = editing this file.
+
+## The settings
+
+| Setting | What it is | Default if the person doesn't care |
+|---|---|---|
+| MASTER_SHEET | ID or URL of the products Google Sheet. Columns: PRODUCT \| PRODUCT LINK (landing) \| LANGUAGE \| RESEARCH LINK \| CREATIVES LINK. One row = one product | **None — must be asked** |
+| PRODUCTS_THIS_RUN | Which Sheet rows to run | All rows (on the very first run: suggest ONE product only) |
+| BASE_FOLDER | Ads folder: one subfolder per product + `_assets/` (research, bank, specs, audit) | `./ads/` in the current project |
+| IMAGE_ENGINE | The most powerful AI image generator available and its exact command (CLI or connector), max resolution, 1:1 | **None — must be asked** |
+| ENGINE_LIMITS | The image plan's simultaneous job limit — enforced with a semaphore, not by launching fewer | Ask; 4 if unknown |
+| OWN_PAGES | The person's own pages, EXCLUDED from competitor research | From the profile's `## Shared` section; else ask |
+| NICHE_RULES | Compliance by niche: health = no medical claims or dosages; money = no income promises; etc. | No medical claims, dosages, income promises, before/after or invented ratings |
+| TOP_MODEL | The most powerful Claude model on the plan — ONLY where design happens: director+critic and repairer | The most capable model available |
+| ECO_MODEL | An economical model — research, generation, audit and the orchestrating session | A Sonnet-class model |
+| DEADLINE | Delivery cutoff. Whatever doesn't make it is reported with its cause — the run is not stretched | 1 hour after start |
+
+## The profile file
+
+`launch-profile.md` in the root of the current project, section
+`## Ads routine` (other skills of this pack keep their own sections in the
+same file; `## Shared` holds OWN_PAGES for every skill). It stores the last
+answers with their date. It is written BY THIS SKILL — nobody has to edit it
+by hand (they may, if they want). Never store passwords, tokens or API keys in
+it.
+
+## Personal rules
+
+If `my-rules.md` exists in the root of the current project, read it before
+starting and apply every rule in it as an extra HARD rule for this run. It is
+how the person adds their own lessons without editing this skill (updates of
+the pack would overwrite edits here). If a personal rule contradicts a rule of
+this skill, follow the personal rule and mention it in the final summary.
+When the person rejects something in a run and states a rule, offer to append
+it to `my-rules.md` (create the file if needed).
+
+## How to get the settings
+
+1. **Settings in the invoking message win.** E.g. `/ads-routine only for
+   <PRODUCT>` → PRODUCTS_THIS_RUN is set; don't ask it again.
+2. **Interactive run (a person is in the chat):**
+   - Profile exists → show the saved settings as one compact table and ask ONE
+     question: "Run with these, change some, or start fresh?"
+   - No profile (first time) → ask for the missing settings in AT MOST 2
+     rounds. Use the AskUserQuestion tool when available for the choice-type
+     ones, plain chat for the free-text ones. Give an example with each
+     question and offer the defaults.
+   - First time only: test the IMAGE_ENGINE with ONE cheap generation before
+     the pipeline (command works, credits OK), and confirm the MASTER_SHEET can
+     be read. If either fails, STOP and say exactly what to fix.
+   - Then print the final settings table and START (no extra confirmation
+     round).
+3. **Unattended run (scheduled task, Grok Bot, headless `claude -p`, or the
+   message says "unattended"):** NEVER ask — nobody is there to answer. Use
+   the settings in the message, fill the rest from the profile, then defaults.
+   If MASTER_SHEET or IMAGE_ENGINE are still missing: STOP without running and
+   print which settings are missing plus an example command that includes
+   them.
+4. **Save** the final settings to the profile (update the `## Ads routine`
+   section in place, with today's date; OWN_PAGES goes to `## Shared`) before
+   starting.
 
 # THE ROUTINE
 
 Run the FULL pipeline every run: EVERYTHING is regenerated every day, all the
-products in the Sheet, and the new ads must be DIFFERENT from yesterday's.
+products in PRODUCTS_THIS_RUN, and the new ads must be DIFFERENT from yesterday's.
 Core philosophy: **MODEL THE BEST ADVERTISERS IN THE WORLD — never reinvent
 the wheel.** The creativity is in the faithful ADAPTATION to your product.
 Report short, results, zero theory.

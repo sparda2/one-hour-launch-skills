@@ -12,30 +12,29 @@ It produces 5 NEW image creatives every day for EACH product in your master Shee
 | Google Drive connector | Read the Sheet and write links | Claude can read your Sheet by its ID |
 | Meta Ads connector | API research (`ads_library_search`) | Ask Claude if it has the tool |
 | AI image engine (CLI or connector) | Generate the 5 ads per product at max resolution | You have the exact command and balance/credits |
-| Google Drive for desktop | The base folder syncs on its own | `~/Library/CloudStorage/GoogleDrive-…` exists |
+| (Optional) a synced folder: Google Drive for desktop, or a GitHub repo on the web | Your ads get backed up automatically | Your base folder is inside it |
 
-## 2. Installation, step by step
+## 2. Installation and settings
 
-1. Copy the `ads-routine` folder (the one you received, with its SKILL.md) to `~/.claude/skills/`. It should end up as `~/.claude/skills/ads-routine/SKILL.md`.
-2. Open that SKILL.md in any editor and fill in the CONFIGURATION block with YOUR data. The table in the next section explains each field and where to get it.
-3. Connect in Claude Code what the routine needs (requirements table above). If a connector is missing, the routine will fail at that step and tell you — better to connect it first.
-4. Restart Claude Code (or open a new session) so the skill shows up in the list.
-5. DON'T schedule it yet: first the on-demand test in section 3.
+Install the pack by following **START-HERE.md**. Before the first run, create your **master Sheet**: one row per product, with the columns PRODUCT | PRODUCT LINK | LANGUAGE | RESEARCH LINK | CREATIVES LINK.
 
-> **Golden rule.** The skill you received is a TEMPLATE of a real operation: every rule exists because something failed one day and cost money. Adapt the data (paths, accounts, criteria) but DON'T delete rules you don't understand — first ask your Claude what that rule protects.
+There's no config file to fill in. On the first run the routine asks you for these settings, tests your image engine with a single cheap generation, and saves everything to `launch-profile.md`:
 
-### The CONFIGURATION fields, one by one
-
-| Field | What it is | Where to get it / example |
+| Setting | What it is | Example / default |
 |---|---|---|
-| MASTER_SHEET | The ID of your products Google Sheet | From the sheet URL: `docs.google.com/spreadsheets/d/THIS_ID/edit`. One row per product |
-| BASE_FOLDER | Root ads folder in Drive for desktop | Inside will live: one folder per product + `_assets/` (research, winners, audit, landings cache) |
-| IMAGE_ENGINE | Your generator and its exact command | The most powerful you have, max resolution, 1:1. Write down the full command with its flags |
-| ENGINE_LIMITS | Simultaneous jobs your plan supports | It's in your plan's docs (typical: 8). The pipeline's semaphore respects it |
-| OWN_PAGES | Your pages, excluded from research | page_id of each one (library → your page → `view_all_page_id` in the URL) |
-| NICHE_RULES | Your compliance by niche | Health: no medical claims or dosages. Money: no income promises. Write it explicitly |
-| TOP_MODEL / ECO_MODEL | Which model each agent uses | TOP (the most powerful on your plan) ONLY for director+critic and repairer; ECO (e.g. Sonnet) for research, generation, audit and orchestration |
-| DEADLINE | Delivery cutoff | E.g. "1 hour after start". Whatever doesn't make it is reported with its cause; the run is not stretched |
+| Master Sheet | Your products Google Sheet | Its URL or its ID (`docs.google.com/spreadsheets/d/THIS_ID/edit`) |
+| Products this run | Which rows to run | All rows (default). On the very first run: just your main product |
+| Base folder | Where the ads go: one folder per product + `_assets/` | `./ads/` (default) |
+| Image engine | Your generator and its exact command or connector | The most powerful one you have, max resolution, 1:1 |
+| Engine limits | How many jobs your image plan runs at the same time | It's in your plan's docs (typical: 8) |
+| Own pages | Your pages, excluded from research | Reused from the Offer Hunter if you already gave them |
+| Niche rules | Your compliance rules by niche | Health: no medical claims or dosages. Money: no income promises |
+| Top / Eco model | Which model each agent uses | Top = the most powerful model on your plan, ONLY for director+critic and repairer. Eco (e.g. Sonnet) for everything else |
+| Deadline | Delivery cutoff | 1 hour after start (default) |
+
+On later runs it shows your saved settings and asks: *"Run with these, change some, or start fresh?"*
+
+> **Golden rule.** This skill comes from a real operation: every rule in it exists because something failed one day and cost money. Don't delete rules you don't understand. First ask your Claude what that rule protects.
 
 > **The 5 cost rules — read them twice.** 1) The handoff between agents goes THROUGH DISK (files), never by pasting content into prompts. 2) An image in context is RE-CHARGED every turn: audit on ~768px copies, open each image ONCE. 3) Research via API, ZERO browser exploring (it's the most expensive part of the pipeline). 4) A run that dies halfway is NOT relaunched without asking — it repeats the expensive stages already paid for. 5) Measure by stage before diagnosing: intuition usually blames the wrong stage.
 
@@ -44,31 +43,29 @@ It produces 5 NEW image creatives every day for EACH product in your master Shee
 1. DON'T run all products. Type: `/ads-routine only for <YOUR MAIN PRODUCT>`.
 2. Wait for that product's full pipeline: API research → bank → direction → generation → audit → delivery.
 3. Look at the 5 with your own eyes. Perfect text? Do they look like professional photography or a template? Does the figure shown exist on your landing? Do they look like a real winner or generic?
-4. Turn everything you DON'T like into a rule: tell Claude "add to the skill: [your rule]". That's how the original was built — through rejections.
+4. Turn everything you DON'T like into a rule. Tell Claude "add to my rules: [your rule]". It goes into `my-rules.md` in your work folder, and every run reads that file automatically. That's how the original was built: through rejections.
 5. Repeat with that product for 2-3 days. When it comes out well without touching anything, add the rest of the products (sequentially, one after another).
 6. The BANK starts empty: the first week the visual agent will work harder seeing new winners. It's an investment: every winner seen stays deconstructed forever.
 
 ## 4. Scheduling it (once it went well 2-3 times)
 
-Tell Claude Code: "create a scheduled task that runs every day at 9:00 AM with this prompt" — and paste exactly this pointer:
+Create a daily task: a scheduled task in the Claude desktop app, or claude.ai/code → Routines on the web. Set it for 9:00 AM with exactly this prompt:
 
 ```
-Read the ENTIRE file ~/.claude/skills/ads-routine/SKILL.md with
-the Read tool and execute it to the letter as if it were this
-prompt. Summarizing it or running the routine from memory is forbidden.
-If the file doesn't exist or can't be read: STOP without running
-anything and report that the skill is not available.
+Run the ads-routine skill in unattended mode, using the saved settings
+in launch-profile.md. Follow the skill to the letter; do not run the
+routine from memory. If the skill is not available, stop and report it.
 Context: you are the daily scheduled run at 9:00 AM.
 ```
 
-- The pointer makes the scheduled task and the manual run ALWAYS the same routine: the skill is the single source of truth.
-- Editing the routine = editing the SKILL.md. The scheduled task is never touched again.
-- To pause it: "pause the scheduled task" (the skill stays available on demand). To resume: "activate it again".
+- In unattended mode the skill never asks questions. It uses your saved settings, and if an essential one is missing it stops and tells you.
+- The skill is the single source of truth. Updating the pack updates the routine, so the scheduled task is never touched again.
+- To pause it, pause the scheduled task. The skill stays available on demand.
 
 ## 5. Day-to-day management
 
 - **Your daily job (5-10 min): the human spot-check.** Open the 5 ads of 1-2 products (rotate which) and look at them. The routine already does its own spot-check, but you set the bar.
-- **Every rejection of yours = a new rule in the skill that same day.** It's the only way it won't repeat tomorrow. That's how the routine improves — it isn't redesigned, it accumulates rules.
+- **Every rejection of yours = a new rule in your `my-rules.md` that same day.** It's the only way it won't repeat tomorrow. That's how the routine improves — it isn't redesigned, it accumulates rules.
 - **Watch the bank:** over the weeks, almost all winners will come out "BANK: yes" and research will be dirt cheap. If the visual agent works a lot every day, something is wrong in the cross-check against the bank.
 - **If one day it's expensive or slow:** ask for the breakdown by stage (agent-minutes and cost) BEFORE touching anything. In the original operation intuition blamed image generation; measurement showed research was 73% of the spend.
 - **New product:** add it as a row to the Sheet — the routine creates its folder and pipeline on its own.
@@ -89,10 +86,10 @@ Context: you are the daily scheduled run at 9:00 AM.
 ## 7. Checklist for this skill
 
 - [ ] Master Sheet created with the 5 columns and all your rows.
-- [ ] BASE_FOLDER created in Drive for desktop with `_assets/` inside.
-- [ ] Image engine tested by hand once (command and balance OK).
-- [ ] CONFIGURATION complete, including NICHE_RULES and OWN_PAGES.
+- [ ] Google Drive and Meta Ads connectors working.
+- [ ] Image engine tested (the first run does this for you).
+- [ ] Niche rules and own pages given on the first run.
 - [ ] First run with ONE product only, reviewed with your own eyes.
 - [ ] 2-3 good days with that product before adding the rest.
 - [ ] Scheduled at 9:00 AM; daily human spot-check of 1-2 products.
-- [ ] Every rejection of yours turned into a rule in the SKILL.md the same day.
+- [ ] Every rejection of yours turned into a rule in `my-rules.md` the same day.

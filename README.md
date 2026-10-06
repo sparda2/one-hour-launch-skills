@@ -1,5 +1,7 @@
 # One Hour Launch Skills
 
+> **Students: start with [`en/START-HERE.md`](en/START-HERE.md).** It covers installation, first-time setup and automation.
+
 The full launch system as Claude Code skills.
 
 - **`en/` — plugin `one-hour-launch`: the product.** English is the master version: new skills and rule changes are written here first.
@@ -21,11 +23,12 @@ Each step's output feeds the next one: winning offer → product spec → funnel
 en/                               ← plugin "one-hour-launch" (master)
   .claude-plugin/plugin.json
   skills/<skill>/SKILL.md
-  guides/                         ← setup & usage guides (Markdown)
+  START-HERE.md                   ← student install & setup guide
+  guides/                         ← per-skill usage guides
 es/                               ← plugin "one-hour-launch-es" (mirror)
   .claude-plugin/plugin.json
   skills/<skill>/SKILL.md
-  guias/                          ← setup & usage guides (PDF)
+  guias/v1-originales/            ← original PDF guides (pre-plugin; Spanish guide update pending)
 ```
 
 Every skill exists in both languages with the same rules. Skill names differ per language so both plugins can be installed side by side without collisions.
@@ -51,6 +54,10 @@ To auto-enable in a workspace repo (so every cloud session opening it has the sk
   "enabledPlugins": { "one-hour-launch-es@one-hour-launch-skills": true }
 }
 ```
+
+## How settings work
+
+No config files to edit. Each skill **asks for its settings** at the start of a run, then saves the answers to `launch-profile.md` in the user's project, with one section per skill and `## Shared` for settings every skill uses. Later runs offer "same / change some / start fresh". Unattended runs (scheduled, Grok Bot, `claude -p`) never ask questions: they use the saved profile and stop if an essential setting is missing. Users add their own rules in `my-rules.md`, which every skill reads and pack updates never overwrite.
 
 ## Rule for editing
 
