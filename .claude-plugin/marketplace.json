@@ -1,0 +1,23 @@
+{
+  "name": "launch-skills",
+  "owner": {
+    "name": "sparda2"
+  },
+  "metadata": {
+    "description": "Winning offer → product → funnel → ads: the full launch system as Claude Code skills, in Spanish and English."
+  },
+  "plugins": [
+    {
+      "name": "launch-engine-es",
+      "source": "./es",
+      "description": "Sistema de lanzamiento en español: cazador de ofertas, modelado de producto, modelado de funnel y rutina de ads.",
+      "version": "0.1.0"
+    },
+    {
+      "name": "launch-engine-en",
+      "source": "./en",
+      "description": "Launch system in English: offer hunter, product modeling, funnel modeling and ads routine.",
+      "version": "0.1.0"
+    }
+  ]
+}
