@@ -27,7 +27,7 @@ There's no config file to fill in. On the first run the routine asks you for the
 | Base folder | Where the ads go: one folder per product + `_assets/` | `./ads/` (default) |
 | Image engine | Your generator and its exact command or connector | The most powerful one you have, max resolution, 1:1 |
 | Engine limits | How many jobs your image plan runs at the same time | It's in your plan's docs (typical: 8) |
-| Own pages | Your pages, excluded from research | Reused from the Offer Hunter if you already gave them |
+| Own pages | Your pages, excluded from research | Reused from the Winning Offer Spy if you already gave them |
 | Niche rules | Your compliance rules by niche | Health: no medical claims or dosages. Money: no income promises |
 | Top / Eco model | Which model each agent uses | Top = the most powerful model on your plan, ONLY for director+critic and repairer. Eco (e.g. Sonnet) for everything else |
 | Deadline | Delivery cutoff | 1 hour after start (default) |

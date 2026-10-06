@@ -8,15 +8,15 @@ This guide takes you from zero to your first offer hunt. Read it once, top to bo
 
 ## ⚡ The fast way (recommended): let the skill set itself up
 
-You don't need to read the rest of this guide. The Offer Hunter has a **guided setup** built in: it checks what's missing, tells you exactly what to click, and takes you all the way to your first hunt. **Everything is saved in your Google Drive**: your results, settings and keywords all live in one Google Sheet. No GitHub, no files on your computer.
+You don't need to read the rest of this guide. The Winning Offer Spy has a **guided setup** built in: it checks what's missing, tells you exactly what to click, and takes you all the way to your first hunt. **Everything is saved in your Google Drive**: your results, settings and keywords all live in one Google Sheet. No GitHub, no files on your computer.
 
-1. **Install the skill (once).** Go to **claude.ai → Settings → Capabilities → Skills → Upload skill** and choose `dist/offer-hunter-EN.zip` from this pack. Your skills sync to Claude Code, so it's available there too.
-2. **Open Claude Code in the cloud.** In the Claude desktop app, open **Code** and choose **Cloud**, or go to **claude.ai/code**. Start a new session. If it asks for a repository, pick any of yours: the hunter doesn't save anything there.
+1. **Install the skill (once).** Go to **claude.ai → Settings → Capabilities → Skills → Upload skill** and choose `dist/winning-offer-spy-EN.zip` from this pack. Your skills sync to Claude Code, so it's available there too.
+2. **Open Claude Code in the cloud.** In the Claude desktop app, open **Code** and choose **Cloud**, or go to **claude.ai/code**. Start a new session. If it asks for a repository, pick any of yours: the spy doesn't save anything there.
 3. **Type:**
    ```
-   Set up the offer hunter for me step by step, then run my first hunt.
+   Set up the Winning Offer Spy for me step by step, then run my first hunt.
    ```
-   If Claude doesn't recognize the skill, attach `en/skills/offer-hunter/SKILL.md` to that message.
+   If Claude doesn't recognize the skill, attach `en/skills/winning-offer-spy/SKILL.md` to that message.
 
 Claude then guides you, one step at a time:
 
@@ -25,12 +25,12 @@ Claude then guides you, one step at a time:
 | 1 | Check | It checks the skill is installed, that the **Meta Ads** and **Google Drive** connectors are connected, and that it has internet access |
 | 2 | Fix | One short click-by-click list for anything missing |
 | 3 | One restart | Connectors only load in a new session. You open a new session and paste the one-line message it gives you |
-| 4 | Your home | It creates an **"Offer Hunter" folder** in your Drive with your master Google Sheet, and gives you the link |
+| 4 | Your home | It creates an **"Winning Offer Spy" folder** in your Drive with your master Google Sheet, and gives you the link |
 | 5 | Your settings | It asks for your product filter, niches and pages, in at most 2 rounds |
 | 6 | Quick test | One test search on Meta, and it builds your keyword bank |
 | 7 | First hunt | 20–40 minutes, ending with your top 3 offers of the day. You can close the window: it keeps running in the cloud |
 
-> **After setup**, every time you want to hunt, start a cloud session and type `/offer-hunter`. Your results are always in the "Offer Hunter — Master" sheet in your Drive.
+> **After setup**, every time you want to hunt, start a cloud session and type `/winning-offer-spy`. Your results are always in the "Winning Offer Spy — Master" sheet in your Drive.
 
 The sections below are the reference: what each piece is, other ways to install (your own computer, Grok Bot), automation, and troubleshooting.
 
@@ -40,7 +40,7 @@ The sections below are the reference: what each piece is, other ways to install 
 
 | Step | Skill | What it does | Status |
 |---|---|---|---|
-| 1 | **Offer Hunter** | Finds offers that are scaling right now in Meta's Ad Library and logs them in a master Google Sheet in your Drive, with their history | ✅ Ready |
+| 1 | **Winning Offer Spy** | Finds offers that are scaling right now in Meta's Ad Library and logs them in a master Google Sheet in your Drive, with their history | ✅ Ready |
 | 2 | **Product Modeler** | Turns a winning offer into the spec of your own product | 🚧 Coming |
 | 3 | **Funnel Modeler** | Builds your funnel using a proven landing page structure | 🚧 Coming |
 | 4 | **Ads Routine** | Creates 5 new image ads per product every day, modeled on the world's best advertisers | ✅ Ready |
@@ -55,13 +55,13 @@ Each step feeds the next one: **winning offer → product → funnel → ads.**
 |---|---|---|
 | A Claude plan that includes **Claude Code** (Pro or Max) | Everything | You can open Claude Code (desktop app, terminal, or claude.ai/code) |
 | A **GitHub account** with access to this pack | Installing and updating the skills | You accepted the GitHub invite you got after purchase, and you can open the pack's repository page |
-| A **Meta Ads connector** that includes the Ad Library search tool | Offer Hunter, Ads Routine | Ask Claude: *"Do you have access to ads_library_search?"* |
-| The **Google Drive** connector | Offer Hunter (writes your master Google Sheet), Ads Routine (reads your products Sheet) | Ask Claude: *"Can you read my Google Sheet <link>?"* |
+| A **Meta Ads connector** that includes the Ad Library search tool | Winning Offer Spy, Ads Routine | Ask Claude: *"Do you have access to ads_library_search?"* |
+| The **Google Drive** connector | Winning Offer Spy (writes your master Google Sheet), Ads Routine (reads your products Sheet) | Ask Claude: *"Can you read my Google Sheet <link>?"* |
 | An **AI image generator** with credits (CLI or connector) | Ads Routine | You know the exact command or connector name |
 
 You add connectors at **claude.ai → Settings → Connectors**. Start a new Claude Code session after connecting one, because connectors only load when a session starts.
 
-> You only need the Meta connector to start with the Offer Hunter. Leave the Ads Routine requirements for later.
+> You only need the Meta connector to start with the Winning Offer Spy. Leave the Ads Routine requirements for later.
 
 ---
 
@@ -87,7 +87,7 @@ You add connectors at **claude.ai → Settings → Connectors**. Start a new Cla
    /plugin install one-hour-launch@one-hour-launch-skills
    ```
 4. Restart Claude Code, or start a new session.
-5. Check it worked: type `/` and look for `offer-hunter` and `ads-routine` in the list. They may appear as `one-hour-launch:offer-hunter`.
+5. Check it worked: type `/` and look for `winning-offer-spy` and `ads-routine` in the list. They may appear as `one-hour-launch:winning-offer-spy`.
 
 ### Option B — Claude Code on the web
 
@@ -117,50 +117,50 @@ You add connectors at **claude.ai → Settings → Connectors**. Start a new Cla
 4. Do your first run yourself in **interactive** mode (step 6 below) so your settings get saved.
 5. From then on, the bot can start runs with:
    ```
-   claude -p "Run the offer-hunter skill in unattended mode."
+   claude -p "Run the winning-offer-spy skill in unattended mode."
    ```
 
 ---
 
 ## 5. Prepare your answers (5 minutes)
 
-On the first run, the Offer Hunter asks you for the settings below. Have your answers ready:
+On the first run, the Winning Offer Spy asks you for the settings below. Have your answers ready:
 
 | It will ask for | What to prepare | Example |
 |---|---|---|
-| **Your filter** | 2–3 sentences: what kind of product can **you** realistically make? Be strict, because the hunter's quality depends on your filter. | "Low-ticket downloadable digital products (PDF guides, templates, prompt packs) I can make with AI in a few days. No video courses, coaching or services." |
+| **Your filter** | 2–3 sentences: what kind of product can **you** realistically make? Be strict, because the spy's quality depends on your filter. | "Low-ticket downloadable digital products (PDF guides, templates, prompt packs) I can make with AI in a few days. No video courses, coaching or services." |
 | **Your niches** | 3–5 niches for each of 3 circles. Circle 1: your current niches. Circle 2: the same buyer, other topics. Circle 3: adjacent niches. | Circle 1: meal planning, budgeting. Circle 2: home organization… |
 | **Your own Facebook pages** | Their names, or better their page IDs. To find a page ID: open the Meta Ad Library, search your page, click it, and the URL shows `view_all_page_id=NUMBER`. | `My Brand`, `123456789` |
 | **Languages** | Which languages to search in | All languages, English first (default) |
 | **Minimum ads** | How many active ads an offer needs to count as scaling | 15 (default). Use 10 for small niches. |
 | **Daily minimum** | How many new verified offers per run to aim for | 5 (default) |
 
-You don't need a keyword bank or a sheet. On the first run the hunter creates both and gives you the sheet link.
+You don't need a keyword bank or a sheet. On the first run the spy creates both and gives you the sheet link.
 
 ---
 
 ## 6. Your first run (watch it)
 
-1. Type `/offer-hunter`, or just say *"hunt offers"*.
+1. Type `/winning-offer-spy`, or just say *"hunt offers"*.
 2. Answer its questions. It asks at most 2 rounds, then shows your settings and starts.
 3. Wait 20–40 minutes. At the end you get:
    - a summary in the chat: new offers, offers whose ad count went up, offers that stopped running, and the top 3 of the day;
    - your master Google Sheet with 4 tabs: Offers, Pending, History, Search Log.
 4. **Check 2–3 findings by hand.** Open the Ad Library link: does it really have that many active ads? Open the landing page: is it really a downloadable digital product with direct checkout?
-5. If the hunter brought you products you couldn't make, your filter is too loose. Run it again and choose *"change some"* to tighten the filter.
+5. If the spy brought you products you couldn't make, your filter is too loose. Run it again and choose *"change some"* to tighten the filter.
 
 ### Where your answers are saved
 
-**Offer Hunter:** in the **Settings** tab of your "Offer Hunter — Master" Google Sheet. **Ads Routine:** in `launch-profile.md` in your work folder. The skills write these themselves. You can look at them, but you never have to edit them.
+**Winning Offer Spy:** in the **Settings** tab of your "Winning Offer Spy — Master" Google Sheet. **Ads Routine:** in `launch-profile.md` in your work folder. The skills write these themselves. You can look at them, but you never have to edit them.
 
 ### Your own rules
 
-When a result isn't what you want, say *"add to my rules: …"*. The rule is saved in the **My Rules** tab of your Offer Hunter sheet (Ads Routine: `my-rules.md` in your work folder), and every run reads it automatically. Updating the pack never overwrites your rules.
+When a result isn't what you want, say *"add to my rules: …"*. The rule is saved in the **My Rules** tab of your Winning Offer Spy sheet (Ads Routine: `my-rules.md` in your work folder), and every run reads it automatically. Updating the pack never overwrites your rules.
 
 ### Changing settings later
 
 - **For the next run:** just answer *"change some"* when it asks.
-- **For a single run:** put the change in the command, for example `/offer-hunter min ads 10, niches: pet care`.
+- **For a single run:** put the change in the command, for example `/winning-offer-spy min ads 10, niches: pet care`.
 
 ---
 
@@ -174,8 +174,8 @@ Your first manual run saved your settings, so a scheduled run can work with nobo
 Pick a time, for example 8:00 AM, and use exactly this prompt:
 
 ```
-Run the offer-hunter skill in unattended mode, using the saved settings
-in the Settings tab of the "Offer Hunter — Master" sheet. Follow the skill to the letter; do not run the
+Run the winning-offer-spy skill in unattended mode, using the saved settings
+in the Settings tab of the "Winning Offer Spy — Master" sheet. Follow the skill to the letter; do not run the
 routine from memory. If the skill is not available, stop and report it.
 Context: you are the daily scheduled run.
 ```

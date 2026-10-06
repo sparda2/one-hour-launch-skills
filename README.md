@@ -1,6 +1,6 @@
 # One Hour Launch Skills
 
-> **Students: start with [`en/START-HERE.md`](en/START-HERE.md).** Fastest path: upload `dist/offer-hunter-EN.zip` at claude.ai → Settings → Capabilities → Skills, open a Claude Code cloud session and say *"Set up the offer hunter for me step by step"*. All data lives in the student's Google Drive.
+> **Students: start with [`en/START-HERE.md`](en/START-HERE.md).** Fastest path: upload `dist/winning-offer-spy-EN.zip` at claude.ai → Settings → Capabilities → Skills, open a Claude Code cloud session and say *"Set up the Winning Offer Spy for me step by step"*. All data lives in the student's Google Drive.
 
 The full launch system as Claude Code skills.
 
@@ -9,7 +9,7 @@ The full launch system as Claude Code skills.
 
 | Step | English (`en/skills/`) | Spanish (`es/skills/`) | Status |
 |---|---|---|---|
-| 1. Find winning offers | `offer-hunter` | `cazador-de-ofertas` | ✅ v1 |
+| 1. Find winning offers | `winning-offer-spy` | `winning-offer-spy-es` | ✅ v1 |
 | 2. Model the product | `product-modeler` | `modelar-producto` | 🚧 to build |
 | 3. Model the funnel | `funnel-modeler` | `modelar-funnel` | 🚧 to build |
 | 4. Create the ads | `ads-routine` | `rutina-de-ads` | ✅ v2 |
@@ -58,7 +58,7 @@ To auto-enable in a workspace repo (so every cloud session opening it has the sk
 
 ## How settings work
 
-No config files to edit. Each skill **asks for its settings** at the start of a run and saves the answers in the user's Google Drive (the Offer Hunter keeps everything, including settings, keywords and personal rules, as tabs of one master Google Sheet). Later runs offer "same / change some / start fresh". Unattended runs (scheduled, Grok Bot, `claude -p`) never ask questions: they use the saved profile and stop if an essential setting is missing. Users add their own rules (Offer Hunter: the "My Rules" tab), which every run reads and pack updates never overwrite.
+No config files to edit. Each skill **asks for its settings** at the start of a run and saves the answers in the user's Google Drive (the Winning Offer Spy keeps everything, including settings, keywords and personal rules, as tabs of one master Google Sheet). Later runs offer "same / change some / start fresh". Unattended runs (scheduled, Grok Bot, `claude -p`) never ask questions: they use the saved profile and stop if an essential setting is missing. Users add their own rules (Winning Offer Spy: the "My Rules" tab), which every run reads and pack updates never overwrite.
 
 ## Rule for editing
 

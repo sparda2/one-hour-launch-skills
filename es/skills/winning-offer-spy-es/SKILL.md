@@ -1,14 +1,14 @@
 ---
-name: cazador-de-ofertas
-description: Caza ofertas que están escalando ahora mismo en la biblioteca de anuncios de Meta según tu filtro de formato, y las registra con su histórico en un Google Sheet maestro en tu Google Drive (ajustes, banco de keywords y tus reglas viven ahí también). Incluye una configuración guiada que lleva a cualquiera de "acabo de instalar esto" a su primera caza. Usar cuando el usuario diga 'cazar ofertas', 'el cazador', 'buscar ofertas escalando', 'configura el cazador', suba esta skill y pida configurarla, o pida el barrido de la hoja maestra.
+name: winning-offer-spy-es
+description: Winning Offer Spy — caza ofertas que están escalando ahora mismo en la biblioteca de anuncios de Meta según tu filtro de formato, y las registra con su histórico en un Google Sheet maestro en tu Google Drive (ajustes, banco de keywords y tus reglas viven ahí también). Incluye una configuración guiada que lleva a cualquiera de "acabo de instalar esto" a su primera caza. Usar cuando el usuario diga 'cazar ofertas', 'winning offer spy', 'buscar ofertas escalando', 'configura winning offer spy', suba esta skill y pida configurarla, o pida el barrido de la hoja maestra.
 ---
 
 # DÓNDE VIVE TODO — un solo Google Sheet en el Drive de la persona
 
 No se guarda nada en el ordenador que ejecuta esta skill (las sesiones en la
 nube se borran al terminar). TODO vive en UN Google Sheet llamado
-**"Cazador de ofertas — Maestro"**, dentro de una carpeta de Drive llamada
-**"Cazador de ofertas"**:
+**"Winning Offer Spy — Maestro"**, dentro de una carpeta de Drive llamada
+**"Winning Offer Spy"**:
 
 | Pestaña | Qué guarda |
 |---|---|
@@ -21,7 +21,7 @@ nube se borran al terminar). TODO vive en UN Google Sheet llamado
 | Mis reglas | regla \| añadida el — las reglas extra de la persona |
 
 **Encontrarlo en una sesión nueva:** busca en Drive el nombre exacto
-"Cazador de ofertas — Maestro". Una coincidencia → úsala. Varias → pregunta
+"Winning Offer Spy — Maestro". Una coincidencia → úsala. Varias → pregunta
 cuál. Ninguna → configuración de primera vez. Jamás crees una segunda hoja
 maestra.
 
@@ -33,7 +33,7 @@ Editar la rutina = editar este archivo.
 
 Ejecuta esta sección PRIMERO siempre que no exista aún la hoja maestra, o su
 pestaña Ajustes no diga `Setup = complete`, o la persona pida configurar /
-reparar el cazador. Con la configuración completa, ve directo al PASO 0.
+reparar Winning Offer Spy. Con la configuración completa, ve directo al PASO 0.
 
 **Cómo guiar (innegociable):**
 - Habla en el idioma de la persona. Asume que NO es técnica: una acción a la
@@ -85,8 +85,8 @@ la causa más probable en una línea (p. ej. "el conector se añadió después d
 abrir esta sesión") y el único arreglo. No sigas hasta que Meta Y Drive
 funcionen (sin Meta no hay caza; sin Drive no hay dónde guardar).
 
-**S4 — Crea la casa.** Busca en Drive "Cazador de ofertas — Maestro".
-Ninguna → crea la carpeta "Cazador de ofertas" y dentro la hoja maestra con
+**S4 — Crea la casa.** Busca en Drive "Winning Offer Spy — Maestro".
+Ninguna → crea la carpeta "Winning Offer Spy" y dentro la hoja maestra con
 las 7 pestañas y sus encabezados (negrita, color, fijados, filtros activos).
 Lee los encabezados de vuelta para confirmar que la escritura funcionó. Dale
 el link a la persona.
@@ -106,7 +106,7 @@ Empiezo tu primera caza ahora (20-40 min). Puedes cerrar esta ventana — sigue
 corriendo en la nube." y ve a LA RUTINA.
 
 **S7 — Mensaje para retomar (dalo cada vez que haga falta reiniciar):**
-`Continúa la configuración del cazador de ofertas donde lo dejamos.`
+`Continúa la configuración de Winning Offer Spy donde lo dejamos.`
 (El checklist vive en la pestaña Ajustes, así que la sesión nueva retoma
 desde ahí. Si la skill aún no está instalada, adjunta el archivo de la skill
 a ese mensaje.)
@@ -142,7 +142,7 @@ enuncie una regla, ofrece añadirla a la pestaña Mis reglas.
 
 ## Cómo obtener los ajustes
 
-1. **Los ajustes del mensaje de invocación mandan.** P. ej. `/cazador-de-ofertas
+1. **Los ajustes del mensaje de invocación mandan.** P. ej. `/winning-offer-spy-es
    nichos: planes keto, mínimo 10 ads` → úsalos directamente y no los vuelvas a
    preguntar.
 2. **Corrida interactiva (hay una persona en el chat):**
@@ -177,7 +177,7 @@ enuncie una regla, ofrece añadirla a la pestaña Mis reglas.
 
 # LA RUTINA
 
-Eres el "Cazador de ofertas escalando". Ejecuta la rutina diaria completa desde
+Eres el "Winning Offer Spy". Ejecuta la rutina diaria completa desde
 la hoja maestra. Objetivo: encontrar ofertas que ESTÁN escalando ahora mismo,
 verificarlas y registrarlas en la hoja maestra con su histórico.
 

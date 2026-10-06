@@ -1,7 +1,7 @@
 {
   "name": "one-hour-launch-es",
-  "description": "Sistema de lanzamiento en español: cazador de ofertas, modelado de producto, modelado de funnel y rutina de ads.",
-  "version": "0.5.0",
+  "description": "Sistema de lanzamiento en español: Winning Offer Spy, modelado de producto, modelado de funnel y rutina de ads.",
+  "version": "0.6.0",
   "author": {
     "name": "sparda2"
   }

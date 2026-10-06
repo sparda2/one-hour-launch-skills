@@ -1,13 +1,13 @@
 ---
-name: offer-hunter
-description: Hunts offers that are scaling right now in Meta's Ad Library according to your format filter, and logs them with their history in a master Google Sheet in your Google Drive (settings, keyword bank and your rules live there too). Includes a guided first-time setup that takes anyone from "I just installed this" to their first hunt. Use when the user says 'hunt offers', 'the hunter', 'find scaling offers', 'set up the offer hunter', uploads this skill and asks to set it up, or asks for the master sheet sweep.
+name: winning-offer-spy
+description: Winning Offer Spy — hunts offers that are scaling right now in Meta's Ad Library according to your format filter, and logs them with their history in a master Google Sheet in your Google Drive (settings, keyword bank and your rules live there too). Includes a guided first-time setup that takes anyone from "I just installed this" to their first hunt. Use when the user says 'winning offer spy', 'spy on winning offers', 'hunt offers', 'find scaling offers', 'set up the Winning Offer Spy', uploads this skill and asks to set it up, or asks for the master sheet sweep.
 ---
 
 # WHERE EVERYTHING LIVES — one Google Sheet in the person's Drive
 
 Nothing is stored on the computer running this skill (cloud sessions are
 wiped when they end). EVERYTHING lives in ONE Google Sheet called
-**"Offer Hunter — Master"**, in a Drive folder called **"Offer Hunter"**:
+**"Winning Offer Spy — Master"**, in a Drive folder called **"Winning Offer Spy"**:
 
 | Tab | What it holds |
 |---|---|
@@ -20,7 +20,7 @@ wiped when they end). EVERYTHING lives in ONE Google Sheet called
 | My Rules | rule \| added on — the person's own extra rules |
 
 **Finding it in a new session:** search Drive for the exact name
-"Offer Hunter — Master". One match → use it. Several → ask which one. None →
+"Winning Offer Spy — Master". One match → use it. Several → ask which one. None →
 first-time setup. Never create a second master sheet.
 
 This skill has NO config block to edit. This skill is the canonical source of
@@ -31,7 +31,7 @@ this file.
 
 Run this section FIRST whenever there is no master sheet yet, or its Settings
 tab doesn't say `Setup = complete`, or the person asks to set up / repair the
-hunter. Once setup is complete, skip straight to STEP 0.
+Winning Offer Spy. Once setup is complete, skip straight to STEP 0.
 
 **How to guide (non-negotiable):**
 - Talk in the person's language. Assume they are NOT technical: one action at
@@ -80,8 +80,8 @@ most likely cause in one line (e.g. "the connector was added after this
 session started") and the one fix. Don't continue until Meta AND Drive work
 (no Meta = no hunt; no Drive = nowhere to save).
 
-**S4 — Create the home.** Search Drive for "Offer Hunter — Master". None →
-create the "Offer Hunter" folder and the master sheet inside it with the 7
+**S4 — Create the home.** Search Drive for "Winning Offer Spy — Master". None →
+create the "Winning Offer Spy" folder and the master sheet inside it with the 7
 tabs and their header rows (bold, colored, frozen, filters on). Read the
 headers back to confirm the write worked. Give the person the link.
 
@@ -100,7 +100,7 @@ your first hunt now (20-40 min). You can close this window — it keeps
 running in the cloud." and go to THE ROUTINE.
 
 **S7 — Resume message (give it whenever a restart is needed):**
-`Continue setting up the offer hunter from where we left off.`
+`Continue setting up the Winning Offer Spy from where we left off.`
 (The checklist lives in the Settings tab, so the new session picks up there.
 If the skill isn't installed yet, they attach the skill file to that message.)
 
@@ -134,7 +134,7 @@ and states a rule, offer to add it to the My Rules tab.
 
 ## How to get the settings
 
-1. **Settings in the invoking message win.** E.g. `/offer-hunter niches:
+1. **Settings in the invoking message win.** E.g. `/winning-offer-spy niches:
    keto meal plans, min ads 10` → use those directly and don't ask them again.
 2. **Interactive run (a person is in the chat):**
    - Settings tab filled → show the saved settings as one compact table and
@@ -168,7 +168,7 @@ and states a rule, offer to add it to the My Rules tab.
 
 # THE ROUTINE
 
-You are the "Scaling Offer Hunter". Run the full daily routine
+You are the "Winning Offer Spy". Run the full daily routine
 from the master sheet. Goal: find offers that ARE scaling right now, verify
 them and log them in the master sheet with their history.
 
