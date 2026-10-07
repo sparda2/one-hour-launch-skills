@@ -117,4 +117,18 @@
       }
     });
   })();
+
+  /* 8. Anti-copy speed bump — OFF unless C.antiCopy is true. Blocks the
+        right-click menu and the common view-source / devtools shortcuts.
+        Note: this only deters casual copying; it cannot truly protect source. */
+  (function () {
+    if (!C.antiCopy) return;
+    document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+    document.addEventListener('keydown', function (e) {
+      var k = (e.key || '').toLowerCase();
+      if (k === 'f12' ||
+          (e.ctrlKey && e.shiftKey && (k === 'i' || k === 'j' || k === 'c')) ||
+          (e.ctrlKey && (k === 'u' || k === 's'))) { e.preventDefault(); }
+    });
+  })();
 })();

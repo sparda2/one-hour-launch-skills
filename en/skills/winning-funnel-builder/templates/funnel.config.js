@@ -15,5 +15,8 @@ window.FUNNEL = {
   proof: { live: [] },         /* e.g. ["Ana from Bogotá just got access", …] */
   /* Tab-away attention: titles cycled in the browser tab when the visitor
      switches away (and an optional favicon). Leave out to use the defaults. */
-  tabAway: { titles: ["👋 Wait! Don’t go…", "🔥 Your offer is still here", "← Come back 💚"] }
+  tabAway: { titles: ["👋 Wait! Don’t go…", "🔥 Your offer is still here", "← Come back 💚"] },
+  /* Anti-copy speed bump: blocks right-click + view-source/devtools shortcuts.
+     Deters casual copying only; set true to enable. */
+  antiCopy: false
 };
